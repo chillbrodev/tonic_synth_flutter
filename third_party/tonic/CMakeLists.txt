@@ -6,13 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ---------------------------------------------------------------------------
 # Tonic sources
-#
-# Tonic is NOT header-only — each class has a .cpp translation unit.
-# We compile them all into the same shared library as the wrapper so the
-# Flutter package only needs to bundle one .so.
-#
-# AudioFileUtils is guarded by #ifdef __APPLE__ so it compiles to nothing
-# on Android — safe to include unconditionally.
 # ---------------------------------------------------------------------------
 
 file(GLOB TONIC_SOURCES
@@ -29,9 +22,9 @@ add_library(tonic_wrapper SHARED
 # ---------------------------------------------------------------------------
 
 target_include_directories(tonic_wrapper PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}"            # tonic_wrapper.h
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"        # for #include "Tonic/Foo.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Tonic"  # for Tonic-internal cross-includes
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Tonic"
 )
 
 # ---------------------------------------------------------------------------
@@ -41,39 +34,48 @@ target_include_directories(tonic_wrapper PRIVATE
 target_compile_options(tonic_wrapper PRIVATE
     -O2
     -ffast-math
-    # No -fvisibility=hidden here — we rely on the linker version script
-    # exclusively to control the export surface. Mixing both causes the
-    # version script glob to have nothing to match against.
 )
 
-# NEON for armeabi-v7a — NDK sets __ARM_NEON automatically for arm64,
-# but armeabi-v7a needs an explicit opt-in.
+# armeabi-v7a NEON opt-in
 if(ANDROID AND ANDROID_ABI STREQUAL "armeabi-v7a")
     target_compile_options(tonic_wrapper PRIVATE -mfpu=neon)
 endif()
 
 # ---------------------------------------------------------------------------
-# Linker flags
-#
-# Version script: whitelist only tonic_* symbols for export.
-# Everything else (Tonic C++ internals, STL symbols) stays local.
+# Linker flags — platform-specific symbol visibility
 # ---------------------------------------------------------------------------
 
-set(VERSION_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/tonic_wrapper.version")
-
-target_link_options(tonic_wrapper PRIVATE
-    -Wl,--version-script=${VERSION_SCRIPT}
-    -Wl,--no-undefined   # catch missing symbols at link time, not at runtime
-)
-
-# Android-specific
 if(ANDROID)
+    # GNU/LLVM lld: version script whitelists tonic_* only
+    set(VERSION_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/tonic_wrapper.version")
+    target_link_options(tonic_wrapper PRIVATE
+        -Wl,--version-script=${VERSION_SCRIPT}
+        -Wl,--no-undefined
+    )
     target_link_libraries(tonic_wrapper PRIVATE log)
+
+elseif(APPLE)
+    # Apple ld: exported_symbols_list whitelists tonic_* only
+    # On iOS the STL is provided by the OS — no bundling needed.
+    set(EXPORTED_SYMBOLS "${CMAKE_CURRENT_SOURCE_DIR}/tonic_wrapper_ios.exp")
+    target_link_options(tonic_wrapper PRIVATE
+        -Wl,-exported_symbols_list,${EXPORTED_SYMBOLS}
+    )
+    # AudioToolbox is used by AudioFileUtils on Apple platforms
+    target_link_libraries(tonic_wrapper PRIVATE
+        "-framework Accelerate"
+        "-framework AudioToolbox"
+        "-framework Foundation"
+    )
+    # Ensure .dylib install name is correct for embedding
+    set_target_properties(tonic_wrapper PROPERTIES
+        INSTALL_NAME_DIR "@rpath"
+        BUILD_WITH_INSTALL_NAME_DIR YES
+    )
 endif()
 
 # ---------------------------------------------------------------------------
-# Install — build_native.sh uses cmake --build --target install
-# to copy the .so directly into native/libs/android/<ABI>/
+# Install
 # ---------------------------------------------------------------------------
 
 install(TARGETS tonic_wrapper

@@ -6,6 +6,12 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
+        },
+        {
+            "name": "tonic_synth_flutter_release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
         }
     ]
 }

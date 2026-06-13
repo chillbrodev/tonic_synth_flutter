@@ -1,0 +1,20 @@
+# Apple ld exported symbols list — equivalent of tonic_wrapper.version
+# Each symbol must be prefixed with _ (C name mangling on Apple platforms)
+_tonic_set_sample_rate
+_tonic_create_fm_drone
+_tonic_create_xy_speed
+_tonic_create_delay_test
+_tonic_create_arbitrary_table
+_tonic_create_bandlimited_osc
+_tonic_create_compressor_test
+_tonic_create_compressor_ducking
+_tonic_create_filtered_noise
+_tonic_create_lf_noise
+_tonic_create_reverb_test
+_tonic_create_step_seq
+_tonic_create_sine_sum
+_tonic_create_stereo_delay
+_tonic_create_snap_to_scale
+_tonic_synth_destroy
+_tonic_synth_set_parameter
+_tonic_synth_fill_buffer
