@@ -1,0 +1,8 @@
+# Linker version script — only export tonic_* symbols.
+# Everything else (Tonic C++ internals, STL) stays hidden.
+{
+  global:
+    tonic_*;
+  local:
+    *;
+};
