@@ -1,0 +1,207 @@
+import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/pages/page_helpers.dart';
+import '../../synths/filtered_noise_synth.dart';
+
+class FilteredNoisePage extends StatefulWidget {
+  const FilteredNoisePage({super.key});
+
+  @override
+  State<FilteredNoisePage> createState() => _FilteredNoisePageState();
+}
+
+class _FilteredNoisePageState extends State<FilteredNoisePage> {
+  late final FilteredNoiseSynth synth;
+  double cutoff = 0.5;
+  double q = 5.0;
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    synth = FilteredNoiseSynth();
+  }
+
+  @override
+  void dispose() {
+    synth.destroy();
+    super.dispose();
+  }
+
+  Future<void> toggleAudio() async {
+    if (isPlaying) {
+      await synth.stopAudio();
+    } else {
+      await synth.startAudio();
+    }
+    setState(() => isPlaying = !isPlaying);
+  }
+
+  void onPanUpdate(DragUpdateDetails d, BoxConstraints c) {
+    final x = (d.localPosition.dx / c.maxWidth).clamp(0.0, 1.0);
+    final y = 1.0 - (d.localPosition.dy / c.maxHeight).clamp(0.0, 1.0);
+    setState(() {
+      cutoff = x;
+      q = y * 10;
+    });
+    synth.setCutoff(x);
+    synth.setQ(y * 10);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0D0D0D),
+      appBar: synthAppBar('NOISE FILTER'),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            sectionLabel('DRAG · X = CUTOFF · Y = RESONANCE'),
+            const SizedBox(height: 16),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return GestureDetector(
+                    onPanUpdate: (d) => onPanUpdate(d, constraints),
+                    onPanStart: (d) => onPanUpdate(
+                      DragUpdateDetails(
+                        globalPosition: d.globalPosition,
+                        localPosition: d.localPosition,
+                        delta: Offset.zero,
+                      ),
+                      constraints,
+                    ),
+                    child: CustomPaint(
+                      painter: _NoiseFilterPainter(
+                        cutoff: cutoff,
+                        q: q / 10,
+                        isPlaying: isPlaying,
+                      ),
+                      size: Size(constraints.maxWidth, constraints.maxHeight),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _coord('CUTOFF', cutoff.toStringAsFixed(2)),
+                _coord('Q', q.toStringAsFixed(1)),
+              ],
+            ),
+            const SizedBox(height: 16),
+            playButton(
+              isPlaying: isPlaying,
+              onTap: toggleAudio,
+              accent: const Color(0xFF9B59B6),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _coord(String label, String value) => Row(
+    children: [
+      Text(
+        '$label  ',
+        style: const TextStyle(
+          fontFamily: 'RobotoMono',
+          fontSize: 9,
+          color: Color(0xFF555555),
+          letterSpacing: 1,
+        ),
+      ),
+      Text(
+        value,
+        style: const TextStyle(
+          fontFamily: 'RobotoMono',
+          fontSize: 12,
+          color: Color(0xFF9B59B6),
+        ),
+      ),
+    ],
+  );
+}
+
+class _NoiseFilterPainter extends CustomPainter {
+  final double cutoff;
+  final double q; // 0..1
+  final bool isPlaying;
+
+  const _NoiseFilterPainter({
+    required this.cutoff,
+    required this.q,
+    required this.isPlaying,
+  });
+
+  static const _bandColors = [
+    Color(0xFF9B59B6),
+    Color(0xFF8E44AD),
+    Color(0xFF7D3C98),
+    Color(0xFF6C3483),
+    Color(0xFF5B2C6F),
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw frequency band columns
+    for (int i = 0; i < 5; i++) {
+      final bandCutoff = [0.0, 0.2, 0.4, 0.6, 0.8][i];
+      final dist = (cutoff - bandCutoff).abs();
+      final bandwidth = 0.4 * (1 - q * 0.8) + 0.05;
+      final intensity = (1 - dist / bandwidth).clamp(0.0, 1.0);
+
+      final x = bandCutoff * size.width;
+      final w = size.width * 0.18;
+      final h = intensity * size.height;
+
+      canvas.drawRect(
+        Rect.fromLTWH(x, size.height - h, w, h),
+        Paint()
+          ..color = _bandColors[i].withValues(
+            alpha: isPlaying ? 0.15 + intensity * 0.5 : 0.08,
+          ),
+      );
+    }
+
+    // Cursor
+    final cx = cutoff * size.width;
+    final cy = (1 - q) * size.height;
+
+    canvas.drawLine(
+      Offset(cx, 0),
+      Offset(cx, size.height),
+      Paint()
+        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..strokeWidth = 1,
+    );
+    canvas.drawLine(
+      Offset(0, cy),
+      Offset(size.width, cy),
+      Paint()
+        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..strokeWidth = 1,
+    );
+    canvas.drawCircle(
+      Offset(cx, cy),
+      8,
+      Paint()..color = const Color(0xFF9B59B6),
+    );
+    canvas.drawCircle(
+      Offset(cx, cy),
+      16,
+      Paint()
+        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_NoiseFilterPainter old) =>
+      old.cutoff != cutoff || old.q != q || old.isPlaying != isPlaying;
+}

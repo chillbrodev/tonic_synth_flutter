@@ -1,16 +1,27 @@
 # tonic_synth_flutter
 
-A Flutter app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks. Built as a companion project for the FlutterCon 2026 talk **"Hook, Line & Sinker: Dart Hooks"**.
+A Flutter demo app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks. Built as a companion project for the FlutterCon 2026 talk **"Hook, Line & Sinker: Dart Hooks"**.
 
 ---
 
 ## What This Is
 
-Three live synthesizers running in Flutter on Android, powered by a C++ audio engine accessed entirely through Dart FFI:
+14 live synthesizers running in Flutter on Android, powered by a C++ audio engine accessed entirely through Dart FFI:
 
 - **FM Drone** — FM synthesis with LFO modulation, controllable via vertical faders
 - **XY Speed** — A filter synth driven by a 2D touch pad
-- **Delay Sequencer** — A step sequencer with delay, adjustable tempo and envelope
+- **Delay Sequencer** — Step sequencer with delay, adjustable tempo and envelope
+- **Wavetable** — Arbitrary lookup oscillator with animated waveform visualizer
+- **Bandlimited** — Crossfade between aliased and bandlimited square waves — hear the difference
+- **Compressor** — 808-style snare through a compressor, with live transfer curve
+- **Duck** — Sidechain compression demo with 120 BPM rhythm and DUCK pulse animation
+- **Noise Filter** — Pink noise through a BPF bank, 2D drag pad controls cutoff and resonance
+- **LF Noise** — Noise-modulated sine wave, controlled via a large rotary encoder
+- **Reverb** — Click and tone source through a fully parametric reverb with room visualizer
+- **Step Seq** — 8-step sequencer with per-step pitch and filter cutoff, drag to edit
+- **Sine Sum** — 10 detuned sine waves swept via a jogwheel
+- **Stereo Delay** — Panned stereo echo with animated delay tap visualizer
+- **Snap to Scale** — Melodic step sequencer that quantises to a pentatonic scale
 
 Audio is rendered in real-time by Tonic, streamed to the device speaker via `flutter_soloud`.
 
@@ -36,7 +47,7 @@ lib/synths/  (typed Dart classes per synth)
 flutter_soloud  (PCM buffer → device speaker)
 ```
 
-CMake is a **developer tool only**. The Flutter build system never invokes it — the hook bundles pre-built `.so` files. Hook could invoke CMake but I chose not too for this app because it follows a certain path for the FlutterCon Talk. 
+CMake is a **developer tool only**. The Flutter build system never invokes it — the hook bundles pre-built `.so` files.
 
 ---
 

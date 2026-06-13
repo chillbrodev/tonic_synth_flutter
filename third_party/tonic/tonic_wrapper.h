@@ -2,12 +2,6 @@
 //
 // Plain-C interface to the Tonic audio synthesis library.
 //
-// Why does this exist?
-// Tonic's API is pure C++ — namespaces, templates, operator overloading,
-// shared smart pointers. FFIGen cannot parse any of it. This file flattens
-// three concrete synth graphs into extern "C" symbols that FFIGen can see
-// and Dart FFI can call without knowing C++ exists.
-//
 // Design principles:
 //   - Opaque handle (TonicSynth*) — FFIGen emits a proper Opaque subclass
 //   - Factory per synth — graph construction stays entirely in C++
@@ -17,9 +11,22 @@
 //
 // Parameters per synth:
 //
-//   FM Drone:     "volume" "carrierPitch" "modIndex" "lfoAmt"
-//   XY Speed:     "x" "y"
-//   Delay Test:   "tempo" "delayTime" "feedback" "delayMix" "decayTime" "volume"
+//   FM Drone:           "volume" "carrierPitch" "modIndex" "lfoAmt"
+//   XY Speed:           "x" "y"
+//   Delay Test:         "tempo" "delayTime" "feedback" "delayMix" "decayTime" "volume"
+//   Arbitrary Table:    (none — autonomous)
+//   Bandlimited Osc:    "blend"
+//   Compressor Test:    "threshold" "ratio" "attackTime" "releaseTime" "gain" "bypass"
+//   Compressor Ducking: "compRelease"
+//   Filtered Noise:     "cutoff" "Q"
+//   LF Noise:           "noiseFreq"
+//   Reverb Test:        "dry" "wet" "decayTime" "lowDecay" "hiDecay" "preDelay"
+//                       "inputLPF" "inputHPF" "density" "shape" "size" "stereo"
+//   Step Seq:           "tempo" "transpose"
+//                       "step0Pitch".."step7Pitch" "step0Cutoff".."step7Cutoff"
+//   Sine Sum:           "pitch"
+//   Stereo Delay:       "freq" "frequencyRandomAmount" "decay"
+//   Snap To Scale:      "speed" "stepperStart" "stepperSpread"
 
 #pragma once
 
@@ -31,27 +38,19 @@ extern "C" {
 
 // ---------------------------------------------------------------------------
 // Opaque handle
-//
-// Forward-declared struct — never defined in C. FFIGen generates:
-//   final class TonicSynth extends Opaque {}
-// All functions take Pointer<TonicSynth>, giving Dart type safety.
 // ---------------------------------------------------------------------------
 
 typedef struct TonicSynth_s TonicSynth;
 
 // ---------------------------------------------------------------------------
-// Global config — call before creating any synth
+// Global config
 // ---------------------------------------------------------------------------
 
 /// Set the global Tonic sample rate. Default is 44100 Hz.
 void tonic_set_sample_rate(float sample_rate);
 
 // ---------------------------------------------------------------------------
-// Factory functions — one per synth preset
-//
-// Each factory constructs the full Tonic signal graph internally.
-// Dart never sees operator overloading, templates, or C++ classes.
-// Caller owns the returned pointer; must call tonic_synth_destroy().
+// Factory functions
 // ---------------------------------------------------------------------------
 
 /// FM drone synth.
@@ -61,7 +60,6 @@ TonicSynth* tonic_create_fm_drone(void);
 
 /// XY speed-controlled filter synth.
 /// Parameters: "x" (0..1), "y" (0..1)
-/// Map a Flutter drag gesture directly to these two values.
 TonicSynth* tonic_create_xy_speed(void);
 
 /// Delay + step-sequencer synth.
@@ -70,8 +68,60 @@ TonicSynth* tonic_create_xy_speed(void);
 ///             "decayTime" (0.05..0.25 s), "volume" (-60..0 dBFS)
 TonicSynth* tonic_create_delay_test(void);
 
+/// Arbitrary wavetable oscillator. No parameters — autonomous.
+TonicSynth* tonic_create_arbitrary_table(void);
+
+/// Bandlimited oscillator blend demo.
+/// Parameters: "blend" (0=aliased .. 1=bandlimited)
+TonicSynth* tonic_create_bandlimited_osc(void);
+
+/// Compressor demo with 808-style snare source.
+/// Parameters: "threshold" (-60..0 dBFS), "ratio" (1..64),
+///             "attackTime" (0.001..0.1 s), "releaseTime" (0.01..0.08 s),
+///             "gain" (0..36 dBFS), "bypass" (0=off 1=on)
+TonicSynth* tonic_create_compressor_test(void);
+
+/// Compressor ducking demo — autonomous rhythm.
+/// Parameters: "compRelease" (0.01..0.5 s)
+TonicSynth* tonic_create_compressor_ducking(void);
+
+/// Filtered pink noise synth.
+/// Parameters: "cutoff" (0..1), "Q" (0..10)
+TonicSynth* tonic_create_filtered_noise(void);
+
+/// LF noise-modulated sine synth.
+/// Parameters: "noiseFreq" (1..500 Hz)
+TonicSynth* tonic_create_lf_noise(void);
+
+/// Reverb test synth — click/tone source through reverb.
+/// Parameters: "dry" (-60..0 dBFS), "wet" (-60..0 dBFS),
+///             "decayTime" (0.1..10 s), "lowDecay" (4000..20000 Hz),
+///             "hiDecay" (20..250 Hz), "preDelay" (0.001..0.05 s),
+///             "inputLPF" (4000..20000 Hz), "inputHPF" (20..250 Hz),
+///             "density" (0..1), "shape" (0..1), "size" (0..1), "stereo" (0..1)
+TonicSynth* tonic_create_reverb_test(void);
+
+/// 8-step sequencer with per-step pitch and filter cutoff.
+/// Parameters: "tempo" (50..300 BPM), "transpose" (-6..6),
+///             "step0Pitch".."step7Pitch" (10..80 MIDI),
+///             "step0Cutoff".."step7Cutoff" (30..1500 Hz)
+TonicSynth* tonic_create_step_seq(void);
+
+/// Sine additive synth — 10 detuned sine waves.
+/// Parameters: "pitch" (0..1, sweeps chord stack)
+TonicSynth* tonic_create_sine_sum(void);
+
+/// Stereo delay with random frequency source.
+/// Parameters: "freq" (0..500 Hz offset), "frequencyRandomAmount" (0..1),
+///             "decay" (0..2 s)
+TonicSynth* tonic_create_stereo_delay(void);
+
+/// Scale-snapping melodic sequencer.
+/// Parameters: "speed" (0..2), "stepperStart" (0..1), "stepperSpread" (0..1)
+TonicSynth* tonic_create_snap_to_scale(void);
+
 // ---------------------------------------------------------------------------
-// Shared runtime API — works on any TonicSynth*
+// Shared runtime API
 // ---------------------------------------------------------------------------
 
 /// Destroy a synth and free all associated resources.
