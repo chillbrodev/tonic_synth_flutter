@@ -65,15 +65,15 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('SNAP SCALE'),
+      appBar: SynthAppBar(title: 'SNAP SCALE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('SCALE · Cm PENTATONIC'),
+            const SectionLabel('SCALE · Cm PENTATONIC'),
             const SizedBox(height: 16),
             // Scale grid
             Expanded(
@@ -84,109 +84,58 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
               ),
             ),
             const SizedBox(height: 24),
-            sectionLabel('CONTROLS'),
+            const SectionLabel('CONTROLS'),
             const SizedBox(height: 16),
-            _slider(
-              'SPEED',
-              speed.toStringAsFixed(2),
-              speed,
-              0,
-              2,
-              const Color(0xFF9B59B6),
-              (v) {
+            LabeledSlider(
+              label: 'SPEED',
+              display: speed.toStringAsFixed(2),
+              value: speed,
+              min: 0,
+              max: 2,
+              color: const Color(0xFF9B59B6),
+              labelWidth: 64,
+              displayWidth: 48,
+              onChanged: (v) {
                 setState(() => speed = v);
                 onResult(synth.setSpeed(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'START',
-              stepperStart.toStringAsFixed(2),
-              stepperStart,
-              0,
-              1,
-              const Color(0xFF9B59B6),
-              (v) {
+            LabeledSlider(
+              label: 'START',
+              display: stepperStart.toStringAsFixed(2),
+              value: stepperStart,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF9B59B6),
+              labelWidth: 64,
+              displayWidth: 48,
+              onChanged: (v) {
                 setState(() => stepperStart = v);
                 onResult(synth.setStepperStart(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'SPREAD',
-              stepperSpread.toStringAsFixed(2),
-              stepperSpread,
-              0,
-              1,
-              const Color(0xFF9B59B6),
-              (v) {
+            LabeledSlider(
+              label: 'SPREAD',
+              display: stepperSpread.toStringAsFixed(2),
+              value: stepperSpread,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF9B59B6),
+              labelWidth: 64,
+              displayWidth: 48,
+              onChanged: (v) {
                 setState(() => stepperSpread = v);
                 onResult(synth.setStepperSpread(v));
               },
             ),
             const SizedBox(height: 24),
-            buildSynthAudioControls(accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
           ],
         ),
       ),
     ));
-  }
-
-  Widget _slider(
-    String label,
-    String display,
-    double value,
-    double min,
-    double max,
-    Color color,
-    ValueChanged<double> onChanged,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 64,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: Color(0xFF555555),
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        Expanded(
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              trackHeight: 1.5,
-              overlayShape: SliderComponentShape.noOverlay,
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 48,
-          child: Text(
-            display,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 11,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 

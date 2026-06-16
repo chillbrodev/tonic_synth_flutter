@@ -47,23 +47,23 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(
+    return SynthPageShell(isRecording: isRecording, 
       child: Scaffold(
         backgroundColor: const Color(0xFF0D0D0D),
-        appBar: synthAppBar('FM DRONE'),
+        appBar: SynthAppBar(title: 'FM DRONE'),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              sectionLabel('SIGNAL GRAPH'),
+              const SectionLabel('SIGNAL GRAPH'),
               const SizedBox(height: 32),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _verticalFader(
+                    _VerticalFader(
                       label: 'CARRIER',
                       unit: 'MIDI',
                       value: carrierPitch,
@@ -75,7 +75,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                         onResult(synth.setCarrierPitch(v));
                       },
                     ),
-                    _verticalFader(
+                    _VerticalFader(
                       label: 'MOD IDX',
                       unit: '',
                       value: modIndex,
@@ -87,7 +87,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                         onResult(synth.setModIndex(v));
                       },
                     ),
-                    _verticalFader(
+                    _VerticalFader(
                       label: 'LFO AMT',
                       unit: '',
                       value: lfoAmount,
@@ -99,7 +99,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                         onResult(synth.setLfoAmount(v));
                       },
                     ),
-                    _verticalFader(
+                    _VerticalFader(
                       label: 'VOLUME',
                       unit: 'dB',
                       value: volume,
@@ -116,23 +116,36 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
               ),
               const SizedBox(height: 24),
               const SizedBox(height: 12),
-              buildSynthAudioControls(),
+              SynthAudioControls.fromMixin(this),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _verticalFader({
-    required String label,
-    required String unit,
-    required double value,
-    required double min,
-    required double max,
-    required Color color,
-    required ValueChanged<double> onChanged,
-  }) {
+class _VerticalFader extends StatelessWidget {
+  const _VerticalFader({
+    required this.label,
+    required this.unit,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.color,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String unit;
+  final double value;
+  final double min;
+  final double max;
+  final Color color;
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Text(

@@ -43,15 +43,15 @@ class _LfNoisePageState extends State<LfNoisePage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('LF NOISE'),
+      appBar: SynthAppBar(title: 'LF NOISE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('NOISE FREQUENCY'),
+            const SectionLabel('NOISE FREQUENCY'),
             const Spacer(),
             Center(
               child: GestureDetector(
@@ -92,7 +92,7 @@ class _LfNoisePageState extends State<LfNoisePage> with SynthPageAudioMixin {
               ),
             ),
             const Spacer(),
-            buildSynthAudioControls(accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
           ],
         ),
       ),

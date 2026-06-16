@@ -63,15 +63,15 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('WAVETABLE'),
+      appBar: SynthAppBar(title: 'WAVETABLE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('WAVEFORM OUTPUT'),
+            const SectionLabel('WAVEFORM OUTPUT'),
             const SizedBox(height: 24),
             Expanded(
               child: Container(
@@ -90,7 +90,7 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
               ),
             ),
             const SizedBox(height: 24),
-            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
           ],
         ),
       ),

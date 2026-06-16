@@ -37,15 +37,15 @@ class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('SINE SUM'),
+      appBar: SynthAppBar(title: 'SINE SUM'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('CHORD STACK · 10 DETUNED SINES'),
+            const SectionLabel('CHORD STACK · 10 DETUNED SINES'),
             const Spacer(),
             Center(
               child: GestureDetector(
@@ -95,7 +95,7 @@ class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
               ),
             ),
             const Spacer(),
-            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
           ],
         ),
       ),

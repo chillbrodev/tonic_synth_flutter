@@ -52,15 +52,15 @@ class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('XY SPEED'),
+      appBar: SynthAppBar(title: 'XY SPEED'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('DRAG TO MODULATE'),
+            const SectionLabel('DRAG TO MODULATE'),
             const SizedBox(height: 16),
             Expanded(
               child: LayoutBuilder(
@@ -101,26 +101,36 @@ class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _coordLabel('X', position.dx),
-                _coordLabel('Y', position.dy),
+                _CoordLabel(axis: 'X', value: position.dx),
+                _CoordLabel(axis: 'Y', value: position.dy),
               ],
             ),
             const SizedBox(height: 16),
-            buildSynthAudioControls(),
+            SynthAudioControls.fromMixin(this),
           ],
         ),
       ),
     ));
   }
+}
 
-  Widget _coordLabel(String axis, double value) => Text(
-    '$axis  ${value.toStringAsFixed(3)}',
-    style: const TextStyle(
-      fontFamily: 'RobotoMono',
-      fontSize: 12,
-      color: Color(0xFF00FF9C),
-    ),
-  );
+class _CoordLabel extends StatelessWidget {
+  const _CoordLabel({required this.axis, required this.value});
+
+  final String axis;
+  final double value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '$axis  ${value.toStringAsFixed(3)}',
+      style: const TextStyle(
+        fontFamily: 'RobotoMono',
+        fontSize: 12,
+        color: Color(0xFF00FF9C),
+      ),
+    );
+  }
 }
 
 class _XyPadPainter extends CustomPainter {

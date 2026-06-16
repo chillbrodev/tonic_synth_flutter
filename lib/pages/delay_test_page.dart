@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
@@ -55,24 +54,24 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('DELAY SEQ'),
+      appBar: SynthAppBar(title: 'DELAY SEQ'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('TEMPO'),
+            const SectionLabel('TEMPO'),
             const SizedBox(height: 16),
-            _bpmCounter(),
+            _BpmCounter(tempo: tempo, onAdjustTempo: adjustTempo),
             const SizedBox(height: 36),
-            sectionLabel('DELAY'),
+            const SectionLabel('DELAY'),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _arcDial(
+                ArcDial(
                   label: 'TIME',
                   value: delayTime,
                   min: 0.001,
@@ -84,7 +83,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
                     onResult(synth.setDelayTime(v));
                   },
                 ),
-                _arcDial(
+                ArcDial(
                   label: 'FEEDBACK',
                   value: feedback,
                   min: 0,
@@ -99,38 +98,43 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
               ],
             ),
             const SizedBox(height: 32),
-            sectionLabel('ENVELOPE & MIX'),
+            const SectionLabel('ENVELOPE & MIX'),
             const SizedBox(height: 20),
-            _horizontalSlider(
+            LabeledSlider(
               label: 'DRY / WET',
+              display: delayMix.toStringAsFixed(2),
               value: delayMix,
               min: 0,
               max: 1,
-              display: delayMix.toStringAsFixed(2),
+              displayWidth: 52,
+              color: const Color(0xFF00FF9C),
               onChanged: (v) {
                 setState(() => delayMix = v);
                 onResult(synth.setDelayMix(v));
               },
             ),
             const SizedBox(height: 16),
-            _horizontalSlider(
+            LabeledSlider(
               label: 'DECAY',
+              display: '${(decayTime * 1000).toStringAsFixed(0)}ms',
               value: decayTime,
               min: 0.05,
               max: 0.25,
-              display: '${(decayTime * 1000).toStringAsFixed(0)}ms',
+              displayWidth: 52,
+              color: const Color(0xFF00FF9C),
               onChanged: (v) {
                 setState(() => decayTime = v);
                 onResult(synth.setDecayTime(v));
               },
             ),
             const SizedBox(height: 16),
-            _horizontalSlider(
+            LabeledSlider(
               label: 'VOLUME',
+              display: '${volume.toStringAsFixed(0)}dB',
               value: volume,
               min: -60,
               max: 0,
-              display: '${volume.toStringAsFixed(0)}dB',
+              displayWidth: 52,
               color: const Color(0xFFFF9500),
               onChanged: (v) {
                 setState(() => volume = v);
@@ -138,21 +142,34 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
               },
             ),
             const SizedBox(height: 32),
-            buildSynthAudioControls(),
+            SynthAudioControls.fromMixin(this),
           ],
         ),
       ),
     ));
   }
+}
 
-  Widget _bpmCounter() {
+class _BpmCounter extends StatelessWidget {
+  const _BpmCounter({required this.tempo, required this.onAdjustTempo});
+
+  final double tempo;
+  final ValueChanged<int> onAdjustTempo;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _tempoButton(Icons.remove, -1),
+        _TempoButton(icon: Icons.remove, delta: -1, onAdjustTempo: onAdjustTempo),
         const SizedBox(width: 8),
-        _tempoButton(Icons.remove, -10, large: false),
+        _TempoButton(
+          icon: Icons.remove,
+          delta: -10,
+          large: false,
+          onAdjustTempo: onAdjustTempo,
+        ),
         const SizedBox(width: 12),
         Text(
           tempo.toStringAsFixed(0),
@@ -175,16 +192,36 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
           ),
         ),
         const SizedBox(width: 12),
-        _tempoButton(Icons.add, 10, large: false),
+        _TempoButton(
+          icon: Icons.add,
+          delta: 10,
+          large: false,
+          onAdjustTempo: onAdjustTempo,
+        ),
         const SizedBox(width: 8),
-        _tempoButton(Icons.add, 1),
+        _TempoButton(icon: Icons.add, delta: 1, onAdjustTempo: onAdjustTempo),
       ],
     );
   }
+}
 
-  Widget _tempoButton(IconData icon, int delta, {bool large = true}) {
+class _TempoButton extends StatelessWidget {
+  const _TempoButton({
+    required this.icon,
+    required this.delta,
+    required this.onAdjustTempo,
+    this.large = true,
+  });
+
+  final IconData icon;
+  final int delta;
+  final ValueChanged<int> onAdjustTempo;
+  final bool large;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => adjustTempo(delta),
+      onTap: () => onAdjustTempo(delta),
       child: Container(
         width: large ? 44 : 32,
         height: large ? 44 : 32,
@@ -200,176 +237,4 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
       ),
     );
   }
-
-  Widget _arcDial({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required String display,
-    required ValueChanged<double> onChanged,
-    Color color = const Color(0xFF00FF9C),
-  }) {
-    return Column(
-      children: [
-        GestureDetector(
-          onPanUpdate: (d) {
-            final range = max - min;
-            final delta = -d.delta.dy / 150 * range;
-            final newVal = (value + delta).clamp(min, max);
-            onChanged(newVal);
-          },
-          child: SizedBox(
-            width: 100,
-            height: 100,
-            child: CustomPaint(
-              painter: _ArcDialPainter(
-                value: (value - min) / (max - min),
-                color: color,
-                displayText: display,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF555555),
-            letterSpacing: 2,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _horizontalSlider({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required String display,
-    required ValueChanged<double> onChanged,
-    Color color = const Color(0xFF00FF9C),
-  }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 72,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: Color(0xFF555555),
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        Expanded(
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              trackHeight: 1.5,
-              overlayShape: SliderComponentShape.noOverlay,
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 52,
-          child: Text(
-            display,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 11,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ArcDialPainter extends CustomPainter {
-
-  const _ArcDialPainter({
-    required this.value,
-    required this.color,
-    required this.displayText,
-  });
-  final double value;
-  final Color color;
-  final String displayText;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 10;
-
-    const startAngle = math.pi * 0.75;
-    const sweepTotal = math.pi * 1.5;
-
-    final trackPaint = Paint()
-      ..color = const Color(0xFF2A2A2A)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepTotal,
-      false,
-      trackPaint,
-    );
-
-    final activePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepTotal * value,
-      false,
-      activePaint,
-    );
-
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: displayText,
-        style: TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: 13,
-          color: color,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    textPainter.paint(
-      canvas,
-      center - Offset(textPainter.width / 2, textPainter.height / 2),
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ArcDialPainter old) =>
-      old.value != value || old.displayText != displayText;
 }

@@ -45,15 +45,15 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('REVERB'),
+      appBar: SynthAppBar(title: 'REVERB'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('ROOM'),
+            const SectionLabel('ROOM'),
             const SizedBox(height: 16),
             Center(
               child: SizedBox(
@@ -71,163 +71,113 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               ),
             ),
             const SizedBox(height: 32),
-            sectionLabel('SPACE'),
+            const SectionLabel('SPACE'),
             const SizedBox(height: 16),
-            _slider(
-              'DECAY',
-              '${decayTime.toStringAsFixed(1)}s',
-              decayTime,
-              0.1,
-              10,
-              const Color(0xFF3498DB),
-              (v) {
+            LabeledSlider(
+              label: 'DECAY',
+              display: '${decayTime.toStringAsFixed(1)}s',
+              value: decayTime,
+              min: 0.1,
+              max: 10,
+              color: const Color(0xFF3498DB),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => decayTime = v);
                 onResult(synth.setDecayTime(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'SIZE',
-              size.toStringAsFixed(2),
-              size,
-              0,
-              1,
-              const Color(0xFF3498DB),
-              (v) {
+            LabeledSlider(
+              label: 'SIZE',
+              display: size.toStringAsFixed(2),
+              value: size,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF3498DB),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => size = v);
                 onResult(synth.setSize(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'SHAPE',
-              shape.toStringAsFixed(2),
-              shape,
-              0,
-              1,
-              const Color(0xFF3498DB),
-              (v) {
+            LabeledSlider(
+              label: 'SHAPE',
+              display: shape.toStringAsFixed(2),
+              value: shape,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF3498DB),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => shape = v);
                 onResult(synth.setShape(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'DENSITY',
-              density.toStringAsFixed(2),
-              density,
-              0,
-              1,
-              const Color(0xFF3498DB),
-              (v) {
+            LabeledSlider(
+              label: 'DENSITY',
+              display: density.toStringAsFixed(2),
+              value: density,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF3498DB),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => density = v);
                 onResult(synth.setDensity(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'STEREO',
-              stereo.toStringAsFixed(2),
-              stereo,
-              0,
-              1,
-              const Color(0xFF3498DB),
-              (v) {
+            LabeledSlider(
+              label: 'STEREO',
+              display: stereo.toStringAsFixed(2),
+              value: stereo,
+              min: 0,
+              max: 1,
+              color: const Color(0xFF3498DB),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => stereo = v);
                 onResult(synth.setStereo(v));
               },
             ),
             const SizedBox(height: 24),
-            sectionLabel('LEVELS'),
+            const SectionLabel('LEVELS'),
             const SizedBox(height: 16),
-            _slider(
-              'DRY',
-              '${dry.toStringAsFixed(0)}dB',
-              dry,
-              -60,
-              0,
-              const Color(0xFF00FF9C),
-              (v) {
+            LabeledSlider(
+              label: 'DRY',
+              display: '${dry.toStringAsFixed(0)}dB',
+              value: dry,
+              min: -60,
+              max: 0,
+              color: const Color(0xFF00FF9C),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => dry = v);
                 onResult(synth.setDry(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'WET',
-              '${wet.toStringAsFixed(0)}dB',
-              wet,
-              -60,
-              0,
-              const Color(0xFFFF9500),
-              (v) {
+            LabeledSlider(
+              label: 'WET',
+              display: '${wet.toStringAsFixed(0)}dB',
+              value: wet,
+              min: -60,
+              max: 0,
+              color: const Color(0xFFFF9500),
+              displayWidth: 52,
+              onChanged: (v) {
                 setState(() => wet = v);
                 onResult(synth.setWet(v));
               },
             ),
             const SizedBox(height: 32),
-            buildSynthAudioControls(accent: const Color(0xFF3498DB)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF3498DB)),
           ],
         ),
       ),
     ));
-  }
-
-  Widget _slider(
-    String label,
-    String display,
-    double value,
-    double min,
-    double max,
-    Color color,
-    ValueChanged<double> onChanged,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 72,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: Color(0xFF555555),
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        Expanded(
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              trackHeight: 1.5,
-              overlayShape: SliderComponentShape.noOverlay,
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 52,
-          child: Text(
-            display,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 11,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 

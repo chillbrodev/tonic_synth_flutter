@@ -1,27 +1,45 @@
 // lib/pages/page_helpers.dart
-// Shared widget helpers used across all synth pages.
+// Shared widgets used across all synth pages.
 
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/audio/audio_limits.dart';
 
 const int maxSessionSeconds = kMaxSessionSeconds;
 
-Widget recordingLimitNotice() => Text(
-  'RECORDINGS LIMITED TO ${kMaxSessionSeconds}s',
-  style: const TextStyle(
-    fontFamily: 'RobotoMono',
-    fontSize: 9,
-    color: Color(0xFF555555),
-    letterSpacing: 2,
-  ),
-);
+class RecordingLimitNotice extends StatelessWidget {
+  const RecordingLimitNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'RECORDINGS LIMITED TO ${kMaxSessionSeconds}s',
+      style: const TextStyle(
+        fontFamily: 'RobotoMono',
+        fontSize: 9,
+        color: Color(0xFF555555),
+        letterSpacing: 2,
+      ),
+    );
+  }
+}
 
 /// Blocks back navigation while recording unless the user confirms discard.
-Widget guardRecordingExit({required bool isRecording, required Widget child}) {
-  return Builder(
-    builder: (context) => PopScope(
+class GuardRecordingExit extends StatelessWidget {
+  const GuardRecordingExit({
+    super.key,
+    required this.isRecording,
+    required this.child,
+  });
+
+  final bool isRecording;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
       canPop: !isRecording,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
@@ -32,8 +50,8 @@ Widget guardRecordingExit({required bool isRecording, required Widget child}) {
         }
       },
       child: child,
-    ),
-  );
+    );
+  }
 }
 
 Future<bool> confirmDiscardRecordingDialog(BuildContext context) async {
@@ -192,69 +210,319 @@ String formatSessionTime(double seconds) {
   return '${m.toString().padLeft(1, '0')}:${rem.toString().padLeft(2, '0')}';
 }
 
-Widget playbackFooter({
-  required bool isPlaying,
-  required Future<void> Function() onToggle,
-  Color accent = const Color(0xFF00FF9C),
-}) => playButton(isPlaying: isPlaying, onTap: onToggle, accent: accent);
+class SynthAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const SynthAppBar({super.key, required this.title});
 
-AppBar synthAppBar(String title) => AppBar(
-  backgroundColor: const Color(0xFF0D0D0D),
-  elevation: 0,
-  leading: const BackButton(color: Color(0xFF555555)),
-  title: Text(
-    title,
-    style: const TextStyle(
-      fontFamily: 'RobotoMono',
-      color: Color(0xFF00FF9C),
-      fontSize: 12,
-      letterSpacing: 4,
-      fontWeight: FontWeight.w500,
-    ),
-  ),
-  bottom: PreferredSize(
-    preferredSize: const Size.fromHeight(1),
-    child: Container(color: const Color(0xFF1A1A1A), height: 1),
-  ),
-);
+  final String title;
 
-Widget sectionLabel(String text) => Text(
-  text,
-  style: const TextStyle(
-    fontFamily: 'RobotoMono',
-    fontSize: 9,
-    color: Color(0xFF555555),
-    letterSpacing: 3,
-  ),
-);
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
 
-Widget playButton({
-  required bool isPlaying,
-  required Future<void> Function() onTap,
-  Color accent = const Color(0xFF00FF9C),
-}) => SizedBox(
-  width: double.infinity,
-  child: OutlinedButton(
-    style: OutlinedButton.styleFrom(
-      side: BorderSide(
-        color: isPlaying ? const Color(0xFFFF9500) : accent,
-        width: 1,
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: const Color(0xFF0D0D0D),
+      elevation: 0,
+      leading: const BackButton(color: Color(0xFF555555)),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'RobotoMono',
+          color: Color(0xFF00FF9C),
+          fontSize: 12,
+          letterSpacing: 4,
+          fontWeight: FontWeight.w500,
+        ),
       ),
-      foregroundColor: isPlaying ? const Color(0xFFFF9500) : accent,
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-    ),
-    onPressed: onTap,
-    child: Text(
-      isPlaying ? 'STOP' : 'PLAY',
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: const Color(0xFF1A1A1A), height: 1),
+      ),
+    );
+  }
+}
+
+class SectionLabel extends StatelessWidget {
+  const SectionLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
       style: const TextStyle(
         fontFamily: 'RobotoMono',
-        fontSize: 11,
-        letterSpacing: 2,
+        fontSize: 9,
+        color: Color(0xFF555555),
+        letterSpacing: 3,
       ),
-    ),
-  ),
-);
+    );
+  }
+}
+
+class PlayButton extends StatelessWidget {
+  const PlayButton({
+    super.key,
+    required this.isPlaying,
+    required this.onTap,
+    this.accent = const Color(0xFF00FF9C),
+  });
+
+  final bool isPlaying;
+  final Future<void> Function() onTap;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            color: isPlaying ? const Color(0xFFFF9500) : accent,
+            width: 1,
+          ),
+          foregroundColor: isPlaying ? const Color(0xFFFF9500) : accent,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        ),
+        onPressed: onTap,
+        child: Text(
+          isPlaying ? 'STOP' : 'PLAY',
+          style: const TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 11,
+            letterSpacing: 2,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LabeledSlider extends StatelessWidget {
+  const LabeledSlider({
+    super.key,
+    required this.label,
+    required this.display,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.color,
+    required this.onChanged,
+    this.labelWidth = 72,
+    this.displayWidth = 56,
+    this.displayFontSize = 11,
+    this.labelLetterSpacing = 1.5,
+  });
+
+  final String label;
+  final String display;
+  final double value;
+  final double min;
+  final double max;
+  final Color color;
+  final ValueChanged<double> onChanged;
+  final double labelWidth;
+  final double displayWidth;
+  final double displayFontSize;
+  final double labelLetterSpacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: labelWidth,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: 9,
+              color: const Color(0xFF555555),
+              letterSpacing: labelLetterSpacing,
+            ),
+          ),
+        ),
+        Expanded(
+          child: SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: color,
+              inactiveTrackColor: const Color(0xFF2A2A2A),
+              thumbColor: Colors.white,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+              trackHeight: 1.5,
+              overlayShape: SliderComponentShape.noOverlay,
+            ),
+            child: Slider(
+              value: value,
+              min: min,
+              max: max,
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: displayWidth,
+          child: Text(
+            display,
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: displayFontSize,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ArcDial extends StatelessWidget {
+  const ArcDial({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.display,
+    required this.onChanged,
+    this.color = const Color(0xFF00FF9C),
+    this.dialSize = 100,
+    this.strokeWidth = 6,
+    this.displayFontSize = 13,
+    this.labelSpacing = 8,
+  });
+
+  final String label;
+  final double value;
+  final double min;
+  final double max;
+  final String display;
+  final ValueChanged<double> onChanged;
+  final Color color;
+  final double dialSize;
+  final double strokeWidth;
+  final double displayFontSize;
+  final double labelSpacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onPanUpdate: (d) {
+            final range = max - min;
+            final delta = -d.delta.dy / 150 * range;
+            onChanged((value + delta).clamp(min, max));
+          },
+          child: SizedBox(
+            width: dialSize,
+            height: dialSize,
+            child: CustomPaint(
+              painter: ArcDialPainter(
+                value: (value - min) / (max - min),
+                color: color,
+                displayText: display,
+                strokeWidth: strokeWidth,
+                displayFontSize: displayFontSize,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: labelSpacing),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 9,
+            color: Color(0xFF555555),
+            letterSpacing: 2,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ArcDialPainter extends CustomPainter {
+  const ArcDialPainter({
+    required this.value,
+    required this.color,
+    required this.displayText,
+    this.strokeWidth = 6,
+    this.displayFontSize = 13,
+  });
+
+  final double value;
+  final Color color;
+  final String displayText;
+  final double strokeWidth;
+  final double displayFontSize;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - strokeWidth - 4;
+    const startAngle = math.pi * 0.75;
+    const sweepTotal = math.pi * 1.5;
+
+    final trackPaint = Paint()
+      ..color = const Color(0xFF2A2A2A)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepTotal,
+      false,
+      trackPaint,
+    );
+
+    final activePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepTotal * value,
+      false,
+      activePaint,
+    );
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: displayText,
+        style: TextStyle(
+          fontFamily: 'RobotoMono',
+          fontSize: displayFontSize,
+          color: color,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    textPainter.paint(
+      canvas,
+      center - Offset(textPainter.width / 2, textPainter.height / 2),
+    );
+  }
+
+  @override
+  bool shouldRepaint(ArcDialPainter old) =>
+      old.value != value ||
+      old.displayText != displayText ||
+      old.strokeWidth != strokeWidth ||
+      old.displayFontSize != displayFontSize;
+}
 
 // ---------------------------------------------------------------------------
 // Recording controls widget
@@ -329,7 +597,7 @@ class _RecordingControlsState extends State<RecordingControls> {
           const SizedBox(height: 8),
         ],
         const SizedBox(height: 12),
-        recordingLimitNotice(),
+        const RecordingLimitNotice(),
         const SizedBox(height: 12),
 
         // Record / Stop button

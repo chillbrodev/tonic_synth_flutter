@@ -43,15 +43,15 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('COMPRESSOR'),
+      appBar: SynthAppBar(title: 'COMPRESSOR'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('TRANSFER CURVE'),
+            const SectionLabel('TRANSFER CURVE'),
             const SizedBox(height: 16),
             SizedBox(
               height: 200,
@@ -65,68 +65,68 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               ),
             ),
             const SizedBox(height: 32),
-            sectionLabel('CONTROLS'),
+            const SectionLabel('CONTROLS'),
             const SizedBox(height: 16),
-            _slider(
-              'THRESHOLD',
-              '${threshold.toStringAsFixed(0)}dB',
-              threshold,
-              -60,
-              0,
-              const Color(0xFFFF4444),
-              (v) {
+            LabeledSlider(
+              label: 'THRESHOLD',
+              display: '${threshold.toStringAsFixed(0)}dB',
+              value: threshold,
+              min: -60,
+              max: 0,
+              color: const Color(0xFFFF4444),
+              onChanged: (v) {
                 setState(() => threshold = v);
                 onResult(synth.setThreshold(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'RATIO',
-              '${ratio.toStringAsFixed(1)}:1',
-              ratio,
-              1,
-              64,
-              const Color(0xFFFF4444),
-              (v) {
+            LabeledSlider(
+              label: 'RATIO',
+              display: '${ratio.toStringAsFixed(1)}:1',
+              value: ratio,
+              min: 1,
+              max: 64,
+              color: const Color(0xFFFF4444),
+              onChanged: (v) {
                 setState(() => ratio = v);
                 onResult(synth.setRatio(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'ATTACK',
-              '${(attackTime * 1000).toStringAsFixed(1)}ms',
-              attackTime,
-              0.001,
-              0.1,
-              const Color(0xFF00FF9C),
-              (v) {
+            LabeledSlider(
+              label: 'ATTACK',
+              display: '${(attackTime * 1000).toStringAsFixed(1)}ms',
+              value: attackTime,
+              min: 0.001,
+              max: 0.1,
+              color: const Color(0xFF00FF9C),
+              onChanged: (v) {
                 setState(() => attackTime = v);
                 onResult(synth.setAttackTime(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'RELEASE',
-              '${(releaseTime * 1000).toStringAsFixed(0)}ms',
-              releaseTime,
-              0.01,
-              0.08,
-              const Color(0xFF00FF9C),
-              (v) {
+            LabeledSlider(
+              label: 'RELEASE',
+              display: '${(releaseTime * 1000).toStringAsFixed(0)}ms',
+              value: releaseTime,
+              min: 0.01,
+              max: 0.08,
+              color: const Color(0xFF00FF9C),
+              onChanged: (v) {
                 setState(() => releaseTime = v);
                 onResult(synth.setReleaseTime(v));
               },
             ),
             const SizedBox(height: 12),
-            _slider(
-              'GAIN',
-              '${gain.toStringAsFixed(0)}dB',
-              gain,
-              0,
-              36,
-              const Color(0xFFFF9500),
-              (v) {
+            LabeledSlider(
+              label: 'GAIN',
+              display: '${gain.toStringAsFixed(0)}dB',
+              value: gain,
+              min: 0,
+              max: 36,
+              color: const Color(0xFFFF9500),
+              onChanged: (v) {
                 setState(() => gain = v);
                 onResult(synth.setGain(v));
               },
@@ -179,68 +179,11 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               ],
             ),
             const SizedBox(height: 32),
-            buildSynthAudioControls(accent: const Color(0xFFFF4444)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF4444)),
           ],
         ),
       ),
     ));
-  }
-
-  Widget _slider(
-    String label,
-    String display,
-    double value,
-    double min,
-    double max,
-    Color color,
-    ValueChanged<double> onChanged,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 72,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: Color(0xFF555555),
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        Expanded(
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              trackHeight: 1.5,
-              overlayShape: SliderComponentShape.noOverlay,
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 56,
-          child: Text(
-            display,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 11,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 

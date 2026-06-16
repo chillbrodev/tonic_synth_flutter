@@ -55,15 +55,15 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('DUCK'),
+      appBar: SynthAppBar(title: 'DUCK'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('SIDECHAIN COMPRESSOR · 120 BPM'),
+            const SectionLabel('SIDECHAIN COMPRESSOR · 120 BPM'),
             const Spacer(),
             // DUCK flash indicator
             Center(
@@ -99,7 +99,7 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
               ),
             ),
             const SizedBox(height: 48),
-            sectionLabel('COMP RELEASE'),
+            const SectionLabel('COMP RELEASE'),
             const SizedBox(height: 24),
             // Arc dial
             Center(
@@ -126,7 +126,7 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
               ),
             ),
             const Spacer(),
-            buildSynthAudioControls(accent: const Color(0xFFFF4444)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF4444)),
           ],
         ),
       ),

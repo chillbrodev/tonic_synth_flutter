@@ -46,15 +46,15 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAud
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('NOISE FILTER'),
+      appBar: SynthAppBar(title: 'NOISE FILTER'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('DRAG · X = CUTOFF · Y = RESONANCE'),
+            const SectionLabel('DRAG · X = CUTOFF · Y = RESONANCE'),
             const SizedBox(height: 16),
             Expanded(
               child: LayoutBuilder(
@@ -85,39 +85,49 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAud
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _coord('CUTOFF', cutoff.toStringAsFixed(2)),
-                _coord('Q', q.toStringAsFixed(1)),
+                _CoordRow(label: 'CUTOFF', value: cutoff.toStringAsFixed(2)),
+                _CoordRow(label: 'Q', value: q.toStringAsFixed(1)),
               ],
             ),
             const SizedBox(height: 16),
-            buildSynthAudioControls(accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
           ],
         ),
       ),
     ));
   }
+}
 
-  Widget _coord(String label, String value) => Row(
-    children: [
-      Text(
-        '$label  ',
-        style: const TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: 9,
-          color: Color(0xFF555555),
-          letterSpacing: 1,
+class _CoordRow extends StatelessWidget {
+  const _CoordRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          '$label  ',
+          style: const TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 9,
+            color: Color(0xFF555555),
+            letterSpacing: 1,
+          ),
         ),
-      ),
-      Text(
-        value,
-        style: const TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: 12,
-          color: Color(0xFF9B59B6),
+        Text(
+          value,
+          style: const TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 12,
+            color: Color(0xFF9B59B6),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
 
 class _NoiseFilterPainter extends CustomPainter {

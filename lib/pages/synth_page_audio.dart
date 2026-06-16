@@ -57,40 +57,103 @@ mixin SynthPageAudioMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  Widget buildSynthPage({required Widget child}) {
-    return guardRecordingExit(isRecording: isRecording, child: child);
+  void startSynthRecording() {
+    setState(() {
+      synthAudio.startRecording();
+      isRecording = true;
+    });
   }
 
-  Widget buildSynthAudioControls({Color accent = const Color(0xFF00FF9C)}) {
+  Future<String?> stopSynthRecording() async {
+    final path = await synthAudio.stopRecording();
+    setState(() {
+      isRecording = false;
+      if (path != null) savedRecordingPath = path;
+    });
+    return path;
+  }
+}
+
+class SynthPageShell extends StatelessWidget {
+  const SynthPageShell({
+    super.key,
+    required this.isRecording,
+    required this.child,
+  });
+
+  final bool isRecording;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GuardRecordingExit(isRecording: isRecording, child: child);
+  }
+}
+
+class SynthAudioControls extends StatelessWidget {
+  const SynthAudioControls({
+    super.key,
+    required this.isPlaying,
+    required this.isRecording,
+    required this.savedRecordingPath,
+    required this.getRecordingProgress,
+    required this.getRecordingElapsed,
+    required this.getRecordingRemaining,
+    required this.onToggle,
+    required this.onRecord,
+    required this.onStopRecord,
+    required this.onShare,
+    this.accent = const Color(0xFF00FF9C),
+  });
+
+  factory SynthAudioControls.fromMixin(
+    SynthPageAudioMixin audioMixin, {
+    Key? key,
+    Color accent = const Color(0xFF00FF9C),
+  }) {
+    return SynthAudioControls(
+      key: key,
+      isPlaying: audioMixin.isPlaying,
+      isRecording: audioMixin.isRecording,
+      savedRecordingPath: audioMixin.savedRecordingPath,
+      getRecordingProgress: () => audioMixin.synthAudio.recordingProgress,
+      getRecordingElapsed: () => audioMixin.synthAudio.recordingSecondsRecorded,
+      getRecordingRemaining: () => audioMixin.synthAudio.recordingSecondsRemaining,
+      onToggle: audioMixin.toggleSynthAudio,
+      onRecord: audioMixin.startSynthRecording,
+      onStopRecord: audioMixin.stopSynthRecording,
+      onShare: audioMixin.synthAudio.shareRecording,
+      accent: accent,
+    );
+  }
+
+  final bool isPlaying;
+  final bool isRecording;
+  final String? savedRecordingPath;
+  final double Function() getRecordingProgress;
+  final double Function() getRecordingElapsed;
+  final double Function() getRecordingRemaining;
+  final Future<void> Function() onToggle;
+  final VoidCallback onRecord;
+  final Future<String?> Function() onStopRecord;
+  final Future<void> Function(String) onShare;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        playbackFooter(
-          isPlaying: isPlaying,
-          onToggle: toggleSynthAudio,
-          accent: accent,
-        ),
+        PlayButton(isPlaying: isPlaying, onTap: onToggle, accent: accent),
         RecordingControls(
           isPlaying: isPlaying,
           isRecording: isRecording,
           savedRecordingPath: savedRecordingPath,
-          getRecordingProgress: () => synthAudio.recordingProgress,
-          getRecordingElapsed: () => synthAudio.recordingSecondsRecorded,
-          getRecordingRemaining: () => synthAudio.recordingSecondsRemaining,
-          onRecord: () {
-            setState(() {
-              synthAudio.startRecording();
-              isRecording = true;
-            });
-          },
-          onStopRecord: () async {
-            final path = await synthAudio.stopRecording();
-            setState(() {
-              isRecording = false;
-              if (path != null) savedRecordingPath = path;
-            });
-            return path;
-          },
-          onShare: synthAudio.shareRecording,
+          getRecordingProgress: getRecordingProgress,
+          getRecordingElapsed: getRecordingElapsed,
+          getRecordingRemaining: getRecordingRemaining,
+          onRecord: onRecord,
+          onStopRecord: onStopRecord,
+          onShare: onShare,
         ),
       ],
     );

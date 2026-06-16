@@ -56,6 +56,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
 
   /// Called when a recording hits the 60s capture limit.
   /// [savedPath] is set when the WAV was saved successfully.
+  @override
   void Function(String? savedPath)? onRecordingLimitReached;
 
   static const int _frames = feedFrames;
@@ -64,15 +65,18 @@ mixin TonicSynthMixin implements SynthAudioHost {
   bool get isRecording => _isRecording;
   bool get isPlaying => _feedIsolateRunning;
 
+  @override
   double get recordingSecondsRecorded {
     if (!_isRecording || _recordedSamples == null) return 0;
     return _recordedSamples!.value / (kSampleRate * kChannels);
   }
 
+  @override
   double get recordingSecondsRemaining =>
       (kMaxSessionSeconds - recordingSecondsRecorded)
           .clamp(0.0, kMaxSessionSeconds.toDouble());
 
+  @override
   double get recordingProgress =>
       (recordingSecondsRecorded / kMaxSessionSeconds).clamp(0.0, 1.0);
 
@@ -80,6 +84,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
   // Audio playback
   // ---------------------------------------------------------------------------
 
+  @override
   Future<void> startAudio() async {
     _samplesDeliveredToSoloud = 0;
     _playbackClock = Stopwatch()..start();
@@ -185,6 +190,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
     onRecordingLimitReached?.call(path);
   }
 
+  @override
   Future<String?> stopAudio({bool saveActiveRecording = false}) async {
     String? savedPath;
     if (_isRecording || _pendingRecording != null) {
@@ -245,6 +251,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
   // Recording
   // ---------------------------------------------------------------------------
 
+  @override
   void startRecording() {
     _isRecording = true;
     if (_feedIsolateRunning) {
@@ -278,6 +285,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
     logger.d('[$synthName] recording cancelled');
   }
 
+  @override
   Future<String?> stopRecording() async {
     if (!_isRecording && _pendingRecording == null) return null;
     _isRecording = false;
@@ -318,6 +326,7 @@ mixin TonicSynthMixin implements SynthAudioHost {
     }
   }
 
+  @override
   Future<void> shareRecording(String path) async {
     await SharePlus.instance.share(
       ShareParams(

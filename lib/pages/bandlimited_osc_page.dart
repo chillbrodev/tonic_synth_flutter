@@ -34,22 +34,22 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('BANDLIMITED'),
+      appBar: SynthAppBar(title: 'BANDLIMITED'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('OSCILLATOR BLEND'),
+            const SectionLabel('OSCILLATOR BLEND'),
             const Spacer(),
             // Waveform comparison labels
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _modeLabel('ALIASED', blend < 0.5),
-                _modeLabel('BANDLIMITED', blend >= 0.5),
+                _ModeLabel(text: 'ALIASED', active: blend < 0.5),
+                _ModeLabel(text: 'BANDLIMITED', active: blend >= 0.5),
               ],
             ),
             const SizedBox(height: 32),
@@ -91,16 +91,24 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
             ),
             // Alias indicator — jagged line when aliased, smooth when bandlimited
             const SizedBox(height: 32),
-            _aliasIndicator(blend),
+            _AliasIndicator(blend: blend),
             const Spacer(),
-            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
           ],
         ),
       ),
     ));
   }
+}
 
-  Widget _modeLabel(String text, bool active) {
+class _ModeLabel extends StatelessWidget {
+  const _ModeLabel({required this.text, required this.active});
+
+  final String text;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       text,
       style: TextStyle(
@@ -111,8 +119,15 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
       ),
     );
   }
+}
 
-  Widget _aliasIndicator(double blend) {
+class _AliasIndicator extends StatelessWidget {
+  const _AliasIndicator({required this.blend});
+
+  final double blend;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
       child: CustomPaint(

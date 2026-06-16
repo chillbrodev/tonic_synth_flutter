@@ -11,18 +11,6 @@ import 'package:ffi/ffi.dart';
 const int kDefaultRingCapacity = 65536;
 
 final class SharedFloatRingBuffer {
-  SharedFloatRingBuffer._({
-    required this.data,
-    required this.head,
-    required this.tail,
-    required this.capacity,
-  });
-
-  final Pointer<Float> data;
-  final Pointer<Int64> head;
-  final Pointer<Int64> tail;
-  final int capacity;
-
   factory SharedFloatRingBuffer.create({int capacity = kDefaultRingCapacity}) {
     assert(_isPowerOfTwo(capacity), 'capacity must be a power of two');
     return SharedFloatRingBuffer._(
@@ -46,6 +34,17 @@ final class SharedFloatRingBuffer {
       capacity: capacity,
     );
   }
+  SharedFloatRingBuffer._({
+    required this.data,
+    required this.head,
+    required this.tail,
+    required this.capacity,
+  });
+
+  final Pointer<Float> data;
+  final Pointer<Int64> head;
+  final Pointer<Int64> tail;
+  final int capacity;
 
   int get availableToRead {
     final used = head.value - tail.value;
@@ -131,5 +130,6 @@ final class SharedFloatRingBuffer {
     calloc.free(tail);
   }
 
-  static bool _isPowerOfTwo(int value) => value > 0 && (value & (value - 1)) == 0;
+  static bool _isPowerOfTwo(int value) =>
+      value > 0 && (value & (value - 1)) == 0;
 }

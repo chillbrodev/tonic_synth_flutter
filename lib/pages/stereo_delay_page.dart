@@ -48,15 +48,15 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
       });
     }
 
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('STEREO DELAY'),
+      appBar: SynthAppBar(title: 'STEREO DELAY'),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionLabel('STEREO FIELD'),
+            const SectionLabel('STEREO FIELD'),
             const SizedBox(height: 16),
             Expanded(
               child: CustomPaint(
@@ -72,37 +72,49 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _arcDial(
+                ArcDial(
                   label: 'FREQ',
                   value: freq,
                   min: 0,
                   max: 500,
                   display: '${freq.toStringAsFixed(0)}Hz',
                   color: const Color(0xFF3498DB),
+                  dialSize: 90,
+                  strokeWidth: 5,
+                  displayFontSize: 10,
+                  labelSpacing: 6,
                   onChanged: (v) {
                     setState(() => freq = v);
                     onResult(synth.setFreq(v));
                   },
                 ),
-                _arcDial(
+                ArcDial(
                   label: 'RANDOM',
                   value: freqRand,
                   min: 0,
                   max: 1,
                   display: freqRand.toStringAsFixed(2),
                   color: const Color(0xFF3498DB),
+                  dialSize: 90,
+                  strokeWidth: 5,
+                  displayFontSize: 10,
+                  labelSpacing: 6,
                   onChanged: (v) {
                     setState(() => freqRand = v);
                     onResult(synth.setFrequencyRandomAmount(v));
                   },
                 ),
-                _arcDial(
+                ArcDial(
                   label: 'DECAY',
                   value: decay,
                   min: 0,
                   max: 2,
                   display: '${decay.toStringAsFixed(2)}s',
                   color: const Color(0xFF3498DB),
+                  dialSize: 90,
+                  strokeWidth: 5,
+                  displayFontSize: 10,
+                  labelSpacing: 6,
                   onChanged: (v) {
                     setState(() => decay = v);
                     onResult(synth.setDecay(v));
@@ -111,54 +123,11 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
               ],
             ),
             const SizedBox(height: 24),
-            buildSynthAudioControls(accent: const Color(0xFF3498DB)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF3498DB)),
           ],
         ),
       ),
     ));
-  }
-
-  Widget _arcDial({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required String display,
-    required Color color,
-    required ValueChanged<double> onChanged,
-  }) {
-    return Column(
-      children: [
-        GestureDetector(
-          onPanUpdate: (d) {
-            final range = max - min;
-            final delta = -d.delta.dy / 150 * range;
-            onChanged((value + delta).clamp(min, max));
-          },
-          child: SizedBox(
-            width: 90,
-            height: 90,
-            child: CustomPaint(
-              painter: _ArcDialPainter(
-                value: (value - min) / (max - min),
-                color: color,
-                displayText: display,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF555555),
-            letterSpacing: 2,
-          ),
-        ),
-      ],
-    );
   }
 }
 
@@ -259,60 +228,4 @@ class _StereoFieldPainter extends CustomPainter {
   @override
   bool shouldRepaint(_StereoFieldPainter old) =>
       old.phase != phase || old.isPlaying != isPlaying || old.decay != decay;
-}
-
-class _ArcDialPainter extends CustomPainter {
-
-  const _ArcDialPainter({
-    required this.value,
-    required this.color,
-    required this.displayText,
-  });
-  final double value;
-  final Color color;
-  final String displayText;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 8;
-    const startAngle = math.pi * 0.75;
-    const sweepTotal = math.pi * 1.5;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepTotal,
-      false,
-      Paint()
-        ..color = const Color(0xFF2A2A2A)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5
-        ..strokeCap = StrokeCap.round,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepTotal * value,
-      false,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5
-        ..strokeCap = StrokeCap.round,
-    );
-
-    final tp = TextPainter(
-      text: TextSpan(
-        text: displayText,
-        style: TextStyle(fontFamily: 'RobotoMono', fontSize: 10, color: color),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    tp.paint(canvas, center - Offset(tp.width / 2, tp.height / 2));
-  }
-
-  @override
-  bool shouldRepaint(_ArcDialPainter old) =>
-      old.value != value || old.displayText != displayText;
 }

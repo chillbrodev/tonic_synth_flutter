@@ -48,9 +48,9 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildSynthPage(child: Scaffold(
+    return SynthPageShell(isRecording: isRecording, child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
-      appBar: synthAppBar('STEP SEQ'),
+      appBar: SynthAppBar(title: 'STEP SEQ'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -59,7 +59,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
             // Tempo row
             Row(
               children: [
-                sectionLabel('TEMPO'),
+                const SectionLabel('TEMPO'),
                 const SizedBox(width: 12),
                 Expanded(
                   child: SliderTheme(
@@ -98,7 +98,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
             // Transpose row
             Row(
               children: [
-                sectionLabel('XPOSE'),
+                const SectionLabel('XPOSE'),
                 const SizedBox(width: 12),
                 Expanded(
                   child: SliderTheme(
@@ -135,7 +135,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
               ],
             ),
             const SizedBox(height: 16),
-            sectionLabel('STEPS  ·  TAP TO SELECT  ·  DRAG TO EDIT'),
+            const SectionLabel('STEPS  ·  TAP TO SELECT  ·  DRAG TO EDIT'),
             const SizedBox(height: 12),
             // Step grid
             Expanded(
@@ -246,27 +246,35 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _stepSlider(
-                    'PITCH',
-                    '${pitches[selectedStep].toStringAsFixed(0)} MIDI',
-                    pitches[selectedStep],
-                    10,
-                    80,
-                    const Color(0xFF00FF9C),
-                    (v) {
+                  LabeledSlider(
+                    label: 'PITCH',
+                    display: '${pitches[selectedStep].toStringAsFixed(0)} MIDI',
+                    value: pitches[selectedStep],
+                    min: 10,
+                    max: 80,
+                    color: const Color(0xFF00FF9C),
+                    labelWidth: 56,
+                    displayWidth: 64,
+                    displayFontSize: 10,
+                    labelLetterSpacing: 1,
+                    onChanged: (v) {
                       setState(() => pitches[selectedStep] = v);
                       synth.setStepPitch(selectedStep, v);
                     },
                   ),
                   const SizedBox(height: 8),
-                  _stepSlider(
-                    'CUTOFF',
-                    '${cutoffs[selectedStep].toStringAsFixed(0)}Hz',
-                    cutoffs[selectedStep],
-                    30,
-                    1500,
-                    _cutoffColor(cutoffs[selectedStep]),
-                    (v) {
+                  LabeledSlider(
+                    label: 'CUTOFF',
+                    display: '${cutoffs[selectedStep].toStringAsFixed(0)}Hz',
+                    value: cutoffs[selectedStep],
+                    min: 30,
+                    max: 1500,
+                    color: _cutoffColor(cutoffs[selectedStep]),
+                    labelWidth: 56,
+                    displayWidth: 64,
+                    displayFontSize: 10,
+                    labelLetterSpacing: 1,
+                    onChanged: (v) {
                       setState(() => cutoffs[selectedStep] = v);
                       synth.setStepCutoff(selectedStep, v);
                     },
@@ -275,67 +283,10 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
               ),
             ),
             const SizedBox(height: 16),
-            buildSynthAudioControls(accent: const Color(0xFF00FF9C)),
+            SynthAudioControls.fromMixin(this, accent: const Color(0xFF00FF9C)),
           ],
         ),
       ),
     ));
-  }
-
-  Widget _stepSlider(
-    String label,
-    String display,
-    double value,
-    double min,
-    double max,
-    Color color,
-    ValueChanged<double> onChanged,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 56,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: Color(0xFF555555),
-              letterSpacing: 1,
-            ),
-          ),
-        ),
-        Expanded(
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              trackHeight: 1.5,
-              overlayShape: SliderComponentShape.noOverlay,
-            ),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 64,
-          child: Text(
-            display,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 10,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
