@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/xy_speed_synth.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/xy_speed_synth.dart';
 
 class XySpeedPage extends StatefulWidget {
   const XySpeedPage({super.key});
@@ -9,33 +11,28 @@ class XySpeedPage extends StatefulWidget {
   State<XySpeedPage> createState() => _XySpeedPageState();
 }
 
-class _XySpeedPageState extends State<XySpeedPage> {
+class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
   late final XySpeedSynth synth;
+
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   Offset position = const Offset(0.5, 0.5);
   final List<Offset> trail = [];
   static const int maxTrail = 30;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = XySpeedSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
-  }
-
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
   }
 
   void onPanUpdate(DragUpdateDetails details, BoxConstraints constraints) {
@@ -55,7 +52,7 @@ class _XySpeedPageState extends State<XySpeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('XY SPEED'),
       body: Padding(
@@ -109,11 +106,11 @@ class _XySpeedPageState extends State<XySpeedPage> {
               ],
             ),
             const SizedBox(height: 16),
-            playButton(isPlaying: isPlaying, onTap: toggleAudio),
+            buildSynthAudioControls(),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _coordLabel(String axis, double value) => Text(

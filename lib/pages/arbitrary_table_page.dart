@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/arbitrary_table_synth.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/arbitrary_table_synth.dart';
 
 class ArbitraryTablePage extends StatefulWidget {
   const ArbitraryTablePage({super.key});
@@ -10,16 +12,16 @@ class ArbitraryTablePage extends StatefulWidget {
 }
 
 class _ArbitraryTablePageState extends State<ArbitraryTablePage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SynthPageAudioMixin {
   late final ArbitraryTableSynth synth;
   late final AnimationController _animController;
   List<double> _waveform = List.filled(64, 0);
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = ArbitraryTableSynth();
+    initSynthPageAudio();
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 80),
@@ -28,34 +30,40 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
 
   void _updateWaveform() {
     if (!isPlaying) return;
-    final buf = synth.fillBuffer(512, 1);
+    final buf = synth.peekRecentSamples(512 * 2);
     final step = buf.length ~/ 64;
     setState(() {
-      _waveform = List.generate(64, (i) => buf[i * step].toDouble());
+      _waveform = List.generate(64, (i) {
+        final idx = i * step;
+        return idx < buf.length ? buf[idx].toDouble() : 0.0;
+      });
     });
   }
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      _animController.stop();
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-      _animController.repeat();
-    }
-    setState(() => isPlaying = !isPlaying);
+  @override
+  SynthAudioHost get synthAudio => synth;
+
+  @override
+  Future<void> onSynthAudioStarting() async {
+    _animController.repeat();
+  }
+
+  @override
+  Future<void> onSynthAudioStopping() async {
+    _animController.stop();
   }
 
   @override
   void dispose() {
     _animController.dispose();
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('WAVETABLE'),
       body: Padding(
@@ -82,15 +90,11 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
               ),
             ),
             const SizedBox(height: 24),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFFFF9500),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
           ],
         ),
       ),
-    );
+    ));
   }
 }
 

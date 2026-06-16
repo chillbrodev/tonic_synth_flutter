@@ -6,15 +6,19 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:tonic_synth_flutter/audio/audio_limits.dart';
+
 class WavWriter {
-  static const int _sampleRate = 44100;
-  static const int _channels = 2;
+  static const int _sampleRate = kSampleRate;
+  static const int _channels = kChannels;
   static const int _bitsPerSample = 32; // float32
-  static const int _maxSeconds = 60;
-  static const int _maxSamples = _sampleRate * _channels * _maxSeconds;
+  static const int maxSamples = kMaxSessionSamples;
+  static const int _maxSamples = maxSamples;
+  static const int maxSeconds = kMaxSessionSeconds;
 
   final _builder = BytesBuilder();
   int _samplesWritten = 0;
+  int get samplesWritten => _samplesWritten;
   bool get isFull => _samplesWritten >= _maxSamples;
   double get secondsRecorded => _samplesWritten / (_sampleRate * _channels);
   double get secondsRemaining =>
@@ -36,7 +40,11 @@ class WavWriter {
 
   /// Write the WAV file to [path]. Returns the File on success.
   Future<File> save(String path) async {
-    final pcmBytes = _builder.toBytes();
+    return savePcm(path, _builder.toBytes());
+  }
+
+  /// Write pre-built PCM bytes to [path]. Returns the File on success.
+  Future<File> savePcm(String path, Uint8List pcmBytes) async {
     final file = File(path);
     final sink = file.openWrite();
 
@@ -51,6 +59,13 @@ class WavWriter {
   void reset() {
     _builder.clear();
     _samplesWritten = 0;
+  }
+
+  /// Returns accumulated PCM bytes and clears the internal buffer.
+  Uint8List takeBytes() {
+    final bytes = _builder.toBytes();
+    reset();
+    return bytes;
   }
 
   List<int> _buildWavHeader(int pcmByteCount) {

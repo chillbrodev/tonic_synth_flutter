@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/filtered_noise_synth.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/filtered_noise_synth.dart';
 
 class FilteredNoisePage extends StatefulWidget {
   const FilteredNoisePage({super.key});
@@ -9,31 +11,23 @@ class FilteredNoisePage extends StatefulWidget {
   State<FilteredNoisePage> createState() => _FilteredNoisePageState();
 }
 
-class _FilteredNoisePageState extends State<FilteredNoisePage> {
+class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAudioMixin {
   late final FilteredNoiseSynth synth;
   double cutoff = 0.5;
   double q = 5.0;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = FilteredNoiseSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
-  }
-
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
   }
 
   void onPanUpdate(DragUpdateDetails d, BoxConstraints c) {
@@ -48,8 +42,11 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> {
   }
 
   @override
+  SynthAudioHost get synthAudio => synth;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('NOISE FILTER'),
       body: Padding(
@@ -93,15 +90,11 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> {
               ],
             ),
             const SizedBox(height: 16),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFF9B59B6),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFF9B59B6)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _coord(String label, String value) => Row(

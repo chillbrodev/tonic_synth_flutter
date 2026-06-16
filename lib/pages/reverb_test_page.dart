@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/reverb_test_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/reverb_test_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class ReverbTestPage extends StatefulWidget {
   const ReverbTestPage({super.key});
@@ -11,7 +13,7 @@ class ReverbTestPage extends StatefulWidget {
   State<ReverbTestPage> createState() => _ReverbTestPageState();
 }
 
-class _ReverbTestPageState extends State<ReverbTestPage> {
+class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixin {
   late final ReverbTestSynth synth;
 
   double dry = -6;
@@ -21,34 +23,29 @@ class _ReverbTestPageState extends State<ReverbTestPage> {
   double shape = 0.5;
   double density = 0.5;
   double stereo = 0.5;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = ReverbTestSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   void onResult(TonicResult r) {}
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('REVERB'),
       body: SingleChildScrollView(
@@ -169,15 +166,11 @@ class _ReverbTestPageState extends State<ReverbTestPage> {
               },
             ),
             const SizedBox(height: 32),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFF3498DB),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFF3498DB)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _slider(

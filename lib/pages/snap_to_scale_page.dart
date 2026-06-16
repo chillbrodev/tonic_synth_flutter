@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/snap_to_scale_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/snap_to_scale_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class SnapToScalePage extends StatefulWidget {
   const SnapToScalePage({super.key});
@@ -12,13 +14,12 @@ class SnapToScalePage extends StatefulWidget {
   State<SnapToScalePage> createState() => _SnapToScalePageState();
 }
 
-class _SnapToScalePageState extends State<SnapToScalePage> {
+class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMixin {
   late final SnapToScaleSynth synth;
 
   double speed = 0.85;
   double stepperStart = 0.5;
   double stepperSpread = 0.5;
-  bool isPlaying = false;
 
   // Scale degrees that light up: 0,2,3,7,10
   static const _scaleDegrees = [0, 2, 3, 7, 10];
@@ -29,38 +30,42 @@ class _SnapToScalePageState extends State<SnapToScalePage> {
   void initState() {
     super.initState();
     synth = SnapToScaleSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
     _noteTimer?.cancel();
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   void onResult(TonicResult r) {}
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      _noteTimer?.cancel();
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-      final bpm = 600 * speed;
-      final interval = Duration(milliseconds: (60000 / bpm).toInt());
-      _noteTimer = Timer.periodic(interval, (_) {
-        setState(() {
-          _activeDegree =
-              _scaleDegrees[math.Random().nextInt(_scaleDegrees.length)];
-        });
+  @override
+  SynthAudioHost get synthAudio => synth;
+
+  @override
+  Future<void> onSynthAudioStarting() async {
+    final bpm = 600 * speed;
+    final interval = Duration(milliseconds: (60000 / bpm).toInt());
+    _noteTimer = Timer.periodic(interval, (_) {
+      setState(() {
+        _activeDegree =
+            _scaleDegrees[math.Random().nextInt(_scaleDegrees.length)];
       });
-    }
-    setState(() => isPlaying = !isPlaying);
+    });
+  }
+
+  @override
+  Future<void> onSynthAudioStopping() async {
+    _noteTimer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('SNAP SCALE'),
       body: Padding(
@@ -120,15 +125,11 @@ class _SnapToScalePageState extends State<SnapToScalePage> {
               },
             ),
             const SizedBox(height: 24),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFF9B59B6),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFF9B59B6)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _slider(

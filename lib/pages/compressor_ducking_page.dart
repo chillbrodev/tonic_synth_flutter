@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/compressor_ducking_synth.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/compressor_ducking_synth.dart';
 
 class CompressorDuckingPage extends StatefulWidget {
   const CompressorDuckingPage({super.key});
@@ -11,10 +13,9 @@ class CompressorDuckingPage extends StatefulWidget {
   State<CompressorDuckingPage> createState() => _CompressorDuckingPageState();
 }
 
-class _CompressorDuckingPageState extends State<CompressorDuckingPage> {
+class _CompressorDuckingPageState extends State<CompressorDuckingPage> with SynthPageAudioMixin {
   late final CompressorDuckingSynth synth;
   double compRelease = 0.025;
-  bool isPlaying = false;
   bool _duckFlash = false;
   Timer? _duckTimer;
 
@@ -22,35 +23,39 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> {
   void initState() {
     super.initState();
     synth = CompressorDuckingSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
     _duckTimer?.cancel();
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      _duckTimer?.cancel();
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-      // Pulse at 120 BPM = 500ms interval
-      _duckTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-        setState(() => _duckFlash = true);
-        Future.delayed(const Duration(milliseconds: 80), () {
-          if (mounted) setState(() => _duckFlash = false);
-        });
+  @override
+  SynthAudioHost get synthAudio => synth;
+
+  @override
+  Future<void> onSynthAudioStarting() async {
+    // Pulse at 120 BPM = 500ms interval
+    _duckTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      setState(() => _duckFlash = true);
+      Future.delayed(const Duration(milliseconds: 80), () {
+        if (mounted) setState(() => _duckFlash = false);
       });
-    }
-    setState(() => isPlaying = !isPlaying);
+    });
+  }
+
+  @override
+  Future<void> onSynthAudioStopping() async {
+    _duckTimer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('DUCK'),
       body: Padding(
@@ -121,15 +126,11 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> {
               ),
             ),
             const Spacer(),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFFFF4444),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFFFF4444)),
           ],
         ),
       ),
-    );
+    ));
   }
 }
 

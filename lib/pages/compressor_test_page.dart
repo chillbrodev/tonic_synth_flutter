@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/compressor_test_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/compressor_test_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class CompressorTestPage extends StatefulWidget {
   const CompressorTestPage({super.key});
@@ -10,7 +12,7 @@ class CompressorTestPage extends StatefulWidget {
   State<CompressorTestPage> createState() => _CompressorTestPageState();
 }
 
-class _CompressorTestPageState extends State<CompressorTestPage> {
+class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageAudioMixin {
   late final CompressorTestSynth synth;
 
   double threshold = -12;
@@ -19,34 +21,29 @@ class _CompressorTestPageState extends State<CompressorTestPage> {
   double releaseTime = 0.05;
   double gain = 0;
   bool bypass = false;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = CompressorTestSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   void onResult(TonicResult r) {}
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('COMPRESSOR'),
       body: SingleChildScrollView(
@@ -182,15 +179,11 @@ class _CompressorTestPageState extends State<CompressorTestPage> {
               ],
             ),
             const SizedBox(height: 32),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFFFF4444),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFFFF4444)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _slider(

@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/sine_sum_synth.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/sine_sum_synth.dart';
 
 class SineSumPage extends StatefulWidget {
   const SineSumPage({super.key});
@@ -10,37 +12,32 @@ class SineSumPage extends StatefulWidget {
   State<SineSumPage> createState() => _SineSumPageState();
 }
 
-class _SineSumPageState extends State<SineSumPage> {
+class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
   late final SineSumSynth synth;
   double pitch = 0.5;
   double _wheelAngle = 0;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = SineSumSynth();
+    initSynthPageAudio();
     _wheelAngle = pitch * math.pi * 2;
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('SINE SUM'),
       body: Padding(
@@ -98,15 +95,11 @@ class _SineSumPageState extends State<SineSumPage> {
               ),
             ),
             const Spacer(),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFFFF9500),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
           ],
         ),
       ),
-    );
+    ));
   }
 }
 

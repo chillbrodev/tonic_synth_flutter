@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/delay_test_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/delay_test_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class DelayTestPage extends StatefulWidget {
   const DelayTestPage({super.key});
@@ -11,7 +13,7 @@ class DelayTestPage extends StatefulWidget {
   State<DelayTestPage> createState() => _DelayTestPageState();
 }
 
-class _DelayTestPageState extends State<DelayTestPage> {
+class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin {
   late final DelayTestSynth synth;
 
   double tempo = 120;
@@ -20,16 +22,17 @@ class _DelayTestPageState extends State<DelayTestPage> {
   double delayMix = 0.3;
   double decayTime = 0.08;
   double volume = -6;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = DelayTestSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
@@ -47,18 +50,12 @@ class _DelayTestPageState extends State<DelayTestPage> {
     onResult(synth.setTempo(tempo));
   }
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('DELAY SEQ'),
       body: SingleChildScrollView(
@@ -141,11 +138,11 @@ class _DelayTestPageState extends State<DelayTestPage> {
               },
             ),
             const SizedBox(height: 32),
-            playButton(isPlaying: isPlaying, onTap: toggleAudio),
+            buildSynthAudioControls(),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _bpmCounter() {

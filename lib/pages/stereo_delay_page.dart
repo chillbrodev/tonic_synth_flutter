@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/stereo_delay_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/stereo_delay_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class StereoDelayPage extends StatefulWidget {
   const StereoDelayPage({super.key});
@@ -11,37 +13,32 @@ class StereoDelayPage extends StatefulWidget {
   State<StereoDelayPage> createState() => _StereoDelayPageState();
 }
 
-class _StereoDelayPageState extends State<StereoDelayPage> {
+class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMixin {
   late final StereoDelaySynth synth;
 
   double freq = 0;
   double freqRand = 0.5;
   double decay = 0.5;
-  bool isPlaying = false;
   double _tapPhase = 0;
 
   @override
   void initState() {
     super.initState();
     synth = StereoDelaySynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   void onResult(TonicResult r) {}
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +48,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> {
       });
     }
 
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('STEREO DELAY'),
       body: Padding(
@@ -114,15 +111,11 @@ class _StereoDelayPageState extends State<StereoDelayPage> {
               ],
             ),
             const SizedBox(height: 24),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFF3498DB),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFF3498DB)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _arcDial({

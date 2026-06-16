@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/step_seq_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
+import 'package:tonic_synth_flutter/synths/step_seq_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class StepSeqPage extends StatefulWidget {
   const StepSeqPage({super.key});
@@ -10,13 +12,12 @@ class StepSeqPage extends StatefulWidget {
   State<StepSeqPage> createState() => _StepSeqPageState();
 }
 
-class _StepSeqPageState extends State<StepSeqPage> {
+class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
   late final StepSeqSynth synth;
 
   double tempo = 100;
   double transpose = 0;
   int selectedStep = 0;
-  bool isPlaying = false;
 
   final List<double> pitches = [48, 52, 55, 48, 60, 55, 52, 43];
   final List<double> cutoffs = [500, 800, 300, 1200, 400, 900, 600, 200];
@@ -25,24 +26,17 @@ class _StepSeqPageState extends State<StepSeqPage> {
   void initState() {
     super.initState();
     synth = StepSeqSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
   void onResult(TonicResult r) {}
-
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
 
   Color _cutoffColor(double hz) {
     final t = (hz - 30) / (1500 - 30);
@@ -50,8 +44,11 @@ class _StepSeqPageState extends State<StepSeqPage> {
   }
 
   @override
+  SynthAudioHost get synthAudio => synth;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('STEP SEQ'),
       body: Padding(
@@ -278,15 +275,11 @@ class _StepSeqPageState extends State<StepSeqPage> {
               ),
             ),
             const SizedBox(height: 16),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFF00FF9C),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFF00FF9C)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _stepSlider(

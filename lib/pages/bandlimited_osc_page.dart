@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
+import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
+import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/bandlimited_osc_synth.dart';
 
 class BandlimitedOscPage extends StatefulWidget {
@@ -9,35 +11,30 @@ class BandlimitedOscPage extends StatefulWidget {
   State<BandlimitedOscPage> createState() => _BandlimitedOscPageState();
 }
 
-class _BandlimitedOscPageState extends State<BandlimitedOscPage> {
+class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageAudioMixin {
   late final BandlimitedOscSynth synth;
   double blend = 0.5;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     synth = BandlimitedOscSynth();
+    initSynthPageAudio();
   }
 
   @override
   void dispose() {
+    disposeSynthPageAudio();
     synth.destroy();
     super.dispose();
   }
 
-  Future<void> toggleAudio() async {
-    if (isPlaying) {
-      await synth.stopAudio();
-    } else {
-      await synth.startAudio();
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
+  @override
+  SynthAudioHost get synthAudio => synth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return buildSynthPage(child: Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: synthAppBar('BANDLIMITED'),
       body: Padding(
@@ -96,15 +93,11 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> {
             const SizedBox(height: 32),
             _aliasIndicator(blend),
             const Spacer(),
-            playButton(
-              isPlaying: isPlaying,
-              onTap: toggleAudio,
-              accent: const Color(0xFFFF9500),
-            ),
+            buildSynthAudioControls(accent: const Color(0xFFFF9500)),
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _modeLabel(String text, bool active) {
