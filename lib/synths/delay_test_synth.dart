@@ -1,18 +1,19 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class DelayTestSynth with TonicSynthMixin {
+
+  DelayTestSynth() : handle = tonic_create_delay_test() {
+    logger.d('[DelayTestSynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
   @override
   String get synthName => 'DelayTestSynth';
-
-  DelayTestSynth() : handle = tonic_create_delay_test() {
-    print('[DelayTestSynth] created');
-  }
 
   TonicResult setTempo(double bpm) => setParam('tempo', bpm);
   TonicResult setDelayTime(double seconds) => setParam('delayTime', seconds);

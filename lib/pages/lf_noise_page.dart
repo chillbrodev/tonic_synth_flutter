@@ -108,15 +108,15 @@ class _LfNoisePageState extends State<LfNoisePage> {
 }
 
 class _RotaryKnobPainter extends CustomPainter {
-  final double angle;
-  final double freq;
-  final bool isPlaying;
 
   const _RotaryKnobPainter({
     required this.angle,
     required this.freq,
     required this.isPlaying,
   });
+  final double angle;
+  final double freq;
+  final bool isPlaying;
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -95,15 +95,15 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
 }
 
 class _WaveformPainter extends CustomPainter {
-  final List<double> samples;
-  final Color color;
-  final bool isPlaying;
 
   const _WaveformPainter({
     required this.samples,
     required this.color,
     required this.isPlaying,
   });
+  final List<double> samples;
+  final Color color;
+  final bool isPlaying;
 
   @override
   void paint(Canvas canvas, Size size) {

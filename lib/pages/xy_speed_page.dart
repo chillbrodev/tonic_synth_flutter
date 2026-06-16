@@ -127,10 +127,10 @@ class _XySpeedPageState extends State<XySpeedPage> {
 }
 
 class _XyPadPainter extends CustomPainter {
-  final Offset position;
-  final List<Offset> trail;
 
   const _XyPadPainter({required this.position, required this.trail});
+  final Offset position;
+  final List<Offset> trail;
 
   @override
   void paint(Canvas canvas, Size size) {

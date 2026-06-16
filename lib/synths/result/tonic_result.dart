@@ -7,6 +7,6 @@ class TonicOk extends TonicResult {
 }
 
 class TonicParameterError extends TonicResult {
-  final String parameter;
   const TonicParameterError(this.parameter);
+  final String parameter;
 }

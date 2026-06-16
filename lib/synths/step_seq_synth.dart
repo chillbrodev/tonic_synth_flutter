@@ -1,9 +1,14 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class StepSeqSynth with TonicSynthMixin {
+
+  StepSeqSynth() : handle = tonic_create_step_seq() {
+    logger.d('[StepSeqSynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
@@ -11,10 +16,6 @@ class StepSeqSynth with TonicSynthMixin {
   String get synthName => 'StepSeqSynth';
 
   static const int stepCount = 8;
-
-  StepSeqSynth() : handle = tonic_create_step_seq() {
-    print('[StepSeqSynth] created');
-  }
 
   /// Sequencer tempo in BPM. Range: 50..300
   TonicResult setTempo(double bpm) => setParam('tempo', bpm);

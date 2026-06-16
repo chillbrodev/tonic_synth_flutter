@@ -15,10 +15,6 @@ import 'stereo_delay_page.dart';
 import 'snap_to_scale_page.dart';
 
 class _SynthCard {
-  final String name;
-  final String description;
-  final Color accent;
-  final Widget Function() builder;
 
   const _SynthCard({
     required this.name,
@@ -26,6 +22,10 @@ class _SynthCard {
     required this.accent,
     required this.builder,
   });
+  final String name;
+  final String description;
+  final Color accent;
+  final Widget Function() builder;
 }
 
 class LauncherPage extends StatelessWidget {
@@ -156,8 +156,8 @@ class LauncherPage extends StatelessWidget {
 }
 
 class _SynthCardWidget extends StatelessWidget {
-  final _SynthCard card;
   const _SynthCardWidget({required this.card});
+  final _SynthCard card;
 
   @override
   Widget build(BuildContext context) {

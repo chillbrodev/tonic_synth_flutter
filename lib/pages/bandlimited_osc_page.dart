@@ -131,8 +131,8 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> {
 }
 
 class _BlendWavePainter extends CustomPainter {
-  final double blend;
   const _BlendWavePainter({required this.blend});
+  final double blend;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -153,9 +153,9 @@ class _BlendWavePainter extends CustomPainter {
       final phase = t * 4 * 3.14159;
       final aliased = (phase % (2 * 3.14159)) < 3.14159 ? 1.0 : -1.0;
       final smooth =
-          (import_sin(phase) +
-              import_sin(phase * 3) / 3 +
-              import_sin(phase * 5) / 5) *
+          (importSin(phase) +
+              importSin(phase * 3) / 3 +
+              importSin(phase * 5) / 5) *
           1.2;
       final sample = aliased * (1 - blend) + smooth * blend;
       final y = midY - sample * midY * 0.7;
@@ -166,7 +166,7 @@ class _BlendWavePainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  double import_sin(double x) => (x - x * x * x / 6 + x * x * x * x * x / 120);
+  double importSin(double x) => (x - x * x * x / 6 + x * x * x * x * x / 120);
 
   @override
   bool shouldRepaint(_BlendWavePainter old) => old.blend != blend;

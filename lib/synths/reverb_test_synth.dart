@@ -1,18 +1,19 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class ReverbTestSynth with TonicSynthMixin {
+
+  ReverbTestSynth() : handle = tonic_create_reverb_test() {
+    logger.d('[ReverbTestSynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
   @override
   String get synthName => 'ReverbTestSynth';
-
-  ReverbTestSynth() : handle = tonic_create_reverb_test() {
-    print('[ReverbTestSynth] created');
-  }
 
   /// Dry level in dBFS. Range: -60..0
   TonicResult setDry(double db) => setParam('dry', db);

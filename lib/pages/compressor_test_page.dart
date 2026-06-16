@@ -252,15 +252,15 @@ class _CompressorTestPageState extends State<CompressorTestPage> {
 }
 
 class _CompressorCurvePainter extends CustomPainter {
-  final double threshold; // -60..0 dBFS
-  final double ratio;
-  final bool bypass;
 
   const _CompressorCurvePainter({
     required this.threshold,
     required this.ratio,
     required this.bypass,
   });
+  final double threshold; // -60..0 dBFS
+  final double ratio;
+  final bool bypass;
 
   @override
   void paint(Canvas canvas, Size size) {

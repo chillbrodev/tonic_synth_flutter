@@ -128,15 +128,15 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> {
 }
 
 class _NoiseFilterPainter extends CustomPainter {
-  final double cutoff;
-  final double q; // 0..1
-  final bool isPlaying;
 
   const _NoiseFilterPainter({
     required this.cutoff,
     required this.q,
     required this.isPlaying,
   });
+  final double cutoff;
+  final double q; // 0..1
+  final bool isPlaying;
 
   static const _bandColors = [
     Color(0xFF9B59B6),

@@ -1,18 +1,19 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class SnapToScaleSynth with TonicSynthMixin {
+
+  SnapToScaleSynth() : handle = tonic_create_snap_to_scale() {
+    logger.d('[SnapToScaleSynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
   @override
   String get synthName => 'SnapToScaleSynth';
-
-  SnapToScaleSynth() : handle = tonic_create_snap_to_scale() {
-    print('[SnapToScaleSynth] created');
-  }
 
   /// Sequencer speed multiplier. Range: 0..2
   TonicResult setSpeed(double amount) => setParam('speed', amount);

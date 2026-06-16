@@ -307,15 +307,15 @@ class _DelayTestPageState extends State<DelayTestPage> {
 }
 
 class _ArcDialPainter extends CustomPainter {
-  final double value;
-  final Color color;
-  final String displayText;
 
   const _ArcDialPainter({
     required this.value,
     required this.color,
     required this.displayText,
   });
+  final double value;
+  final Color color;
+  final String displayText;
 
   @override
   void paint(Canvas canvas, Size size) {

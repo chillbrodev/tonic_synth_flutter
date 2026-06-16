@@ -1,18 +1,19 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class StereoDelaySynth with TonicSynthMixin {
+
+  StereoDelaySynth() : handle = tonic_create_stereo_delay() {
+    logger.d('[StereoDelaySynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
   @override
   String get synthName => 'StereoDelaySynth';
-
-  StereoDelaySynth() : handle = tonic_create_stereo_delay() {
-    print('[StereoDelaySynth] created');
-  }
 
   /// Base frequency offset in Hz. Range: 0..500
   TonicResult setFreq(double hz) => setParam('freq', hz);

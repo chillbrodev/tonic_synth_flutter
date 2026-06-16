@@ -111,15 +111,15 @@ class _SineSumPageState extends State<SineSumPage> {
 }
 
 class _JogWheelPainter extends CustomPainter {
-  final double angle;
-  final double pitch;
-  final bool isPlaying;
 
   const _JogWheelPainter({
     required this.angle,
     required this.pitch,
     required this.isPlaying,
   });
+  final double angle;
+  final double pitch;
+  final bool isPlaying;
 
   @override
   void paint(Canvas canvas, Size size) {

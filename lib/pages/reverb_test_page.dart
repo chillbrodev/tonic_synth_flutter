@@ -239,11 +239,6 @@ class _ReverbTestPageState extends State<ReverbTestPage> {
 }
 
 class _RoomPainter extends CustomPainter {
-  final double size;
-  final double shape;
-  final double density;
-  final double decayTime;
-  final bool isPlaying;
 
   const _RoomPainter({
     required this.size,
@@ -252,6 +247,11 @@ class _RoomPainter extends CustomPainter {
     required this.decayTime,
     required this.isPlaying,
   });
+  final double size;
+  final double shape;
+  final double density;
+  final double decayTime;
+  final bool isPlaying;
 
   @override
   void paint(Canvas canvas, Size canvasSize) {

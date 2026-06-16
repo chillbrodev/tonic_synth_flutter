@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
-import '../../synths/fm_drone_synth.dart';
-import '../../synths/result/tonic_result.dart';
+import 'package:tonic_synth_flutter/synths/fm_drone_synth.dart';
+import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class FmDronePage extends StatefulWidget {
   const FmDronePage({super.key});
@@ -18,6 +18,7 @@ class _FmDronePageState extends State<FmDronePage> {
   double modIndex = 0.25;
   double lfoAmount = 0.5;
   bool isPlaying = false;
+  bool isRecording = false;
 
   @override
   void initState() {
@@ -118,6 +119,33 @@ class _FmDronePageState extends State<FmDronePage> {
             ),
             const SizedBox(height: 24),
             playButton(isPlaying: isPlaying, onTap: toggleAudio),
+            RecordingControls(
+              isPlaying: isPlaying,
+              isRecording: isRecording,
+              getProgress: () => synth.recordingProgress,
+              getSecondsRecorded: () => synth.recordingSecondsRecorded,
+              getSecondsRemaining: () => synth.recordingSecondsRemaining,
+              onRecord: () {
+                synth.onAutoStop = (path) {
+                  if (mounted) {
+                    setState(() {
+                      isPlaying = false;
+                      isRecording = false;
+                    });
+                  }
+                };
+                setState(() {
+                  synth.startRecording();
+                  isRecording = true;
+                });
+              },
+              onStopRecord: () async {
+                final path = await synth.stopRecording();
+                setState(() => isRecording = false);
+                return path;
+              },
+              onShare: synth.shareRecording,
+            ),
           ],
         ),
       ),

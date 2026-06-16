@@ -170,15 +170,15 @@ class _StereoDelayPageState extends State<StereoDelayPage> {
 }
 
 class _StereoFieldPainter extends CustomPainter {
-  final double phase;
-  final double decay;
-  final bool isPlaying;
 
   const _StereoFieldPainter({
     required this.phase,
     required this.decay,
     required this.isPlaying,
   });
+  final double phase;
+  final double decay;
+  final bool isPlaying;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -269,15 +269,15 @@ class _StereoFieldPainter extends CustomPainter {
 }
 
 class _ArcDialPainter extends CustomPainter {
-  final double value;
-  final Color color;
-  final String displayText;
 
   const _ArcDialPainter({
     required this.value,
     required this.color,
     required this.displayText,
   });
+  final double value;
+  final Color color;
+  final String displayText;
 
   @override
   void paint(Canvas canvas, Size size) {

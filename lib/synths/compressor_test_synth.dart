@@ -1,18 +1,19 @@
 import 'dart:ffi';
+import '../logger.dart';
 import '../ffi/gen/tonic_native.g.dart';
 import 'tonic_synth_mixin.dart';
 import 'result/tonic_result.dart';
 
 class CompressorTestSynth with TonicSynthMixin {
+
+  CompressorTestSynth() : handle = tonic_create_compressor_test() {
+    logger.d('[CompressorTestSynth] created');
+  }
   @override
   final Pointer<TonicSynth_s> handle;
 
   @override
   String get synthName => 'CompressorTestSynth';
-
-  CompressorTestSynth() : handle = tonic_create_compressor_test() {
-    print('[CompressorTestSynth] created');
-  }
 
   /// Threshold in dBFS. Range: -60..0
   TonicResult setThreshold(double db) => setParam('threshold', db);

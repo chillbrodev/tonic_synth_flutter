@@ -190,15 +190,15 @@ class _SnapToScalePageState extends State<SnapToScalePage> {
 }
 
 class _ScaleGrid extends StatelessWidget {
-  final int activeDegree;
-  final bool isPlaying;
-  final double spread;
 
   const _ScaleGrid({
     required this.activeDegree,
     required this.isPlaying,
     required this.spread,
   });
+  final int activeDegree;
+  final bool isPlaying;
+  final double spread;
 
   static const _allDegrees = 12;
   static const _scaleDegrees = {0, 2, 3, 7, 10};
