@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/fm_drone_synth.dart';
@@ -49,7 +50,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, 
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D0D0D),
+        backgroundColor: AppStyles.background,
         appBar: SynthAppBar(title: 'FM DRONE'),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -69,7 +70,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                       value: carrierPitch,
                       min: 20,
                       max: 32,
-                      color: const Color(0xFF00FF9C),
+                      color: AppStyles.accentMint,
                       onChanged: (v) {
                         setState(() => carrierPitch = v);
                         onResult(synth.setCarrierPitch(v));
@@ -81,7 +82,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                       value: modIndex,
                       min: 0,
                       max: 1,
-                      color: const Color(0xFF00FF9C),
+                      color: AppStyles.accentMint,
                       onChanged: (v) {
                         setState(() => modIndex = v);
                         onResult(synth.setModIndex(v));
@@ -93,7 +94,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                       value: lfoAmount,
                       min: 0,
                       max: 1,
-                      color: const Color(0xFFFF9500),
+                      color: AppStyles.accentOrange,
                       onChanged: (v) {
                         setState(() => lfoAmount = v);
                         onResult(synth.setLfoAmount(v));
@@ -105,7 +106,7 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
                       value: volume,
                       min: -60,
                       max: 0,
-                      color: const Color(0xFFFF9500),
+                      color: AppStyles.accentOrange,
                       onChanged: (v) {
                         setState(() => volume = v);
                         onResult(synth.setVolume(v));
@@ -152,11 +153,7 @@ class _VerticalFader extends StatelessWidget {
           unit.isEmpty
               ? value.toStringAsFixed(2)
               : '${value.toStringAsFixed(unit == 'dB' ? 0 : 1)}$unit',
-          style: TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 11,
-            color: color,
-          ),
+          style: AppStyles.monoValue(color),
         ),
         const SizedBox(height: 8),
         Expanded(
@@ -165,8 +162,8 @@ class _VerticalFader extends StatelessWidget {
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 activeTrackColor: color,
-                inactiveTrackColor: const Color(0xFF2A2A2A),
-                thumbColor: Colors.white,
+                inactiveTrackColor: AppStyles.trackInactive,
+                thumbColor: AppStyles.textPrimary,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                 trackHeight: 2,
                 overlayShape: SliderComponentShape.noOverlay,
@@ -181,15 +178,7 @@ class _VerticalFader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF555555),
-            letterSpacing: 1.5,
-          ),
-        ),
+        Text(label, style: AppStyles.faderLabel),
       ],
     );
   }

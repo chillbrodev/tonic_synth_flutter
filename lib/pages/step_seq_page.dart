@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -40,7 +41,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
 
   Color _cutoffColor(double hz) {
     final t = (hz - 30) / (1500 - 30);
-    return Color.lerp(const Color(0xFF3498DB), const Color(0xFF00FF9C), t)!;
+    return Color.lerp(AppStyles.accentBlue, AppStyles.accentMint, t)!;
   }
 
   @override
@@ -49,7 +50,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'STEP SEQ'),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -64,9 +65,9 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                 Expanded(
                   child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: const Color(0xFF00FF9C),
-                      inactiveTrackColor: const Color(0xFF2A2A2A),
-                      thumbColor: Colors.white,
+                      activeTrackColor: AppStyles.accentMint,
+                      inactiveTrackColor: AppStyles.trackInactive,
+                      thumbColor: AppStyles.textPrimary,
                       thumbShape: const RoundSliderThumbShape(
                         enabledThumbRadius: 5,
                       ),
@@ -86,11 +87,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                 ),
                 Text(
                   '${tempo.toStringAsFixed(0)} BPM',
-                  style: const TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 11,
-                    color: Color(0xFF00FF9C),
-                  ),
+                  style: AppStyles.monoValue(AppStyles.accentMint),
                 ),
               ],
             ),
@@ -103,9 +100,9 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                 Expanded(
                   child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: const Color(0xFFFF9500),
-                      inactiveTrackColor: const Color(0xFF2A2A2A),
-                      thumbColor: Colors.white,
+                      activeTrackColor: AppStyles.accentOrange,
+                      inactiveTrackColor: AppStyles.trackInactive,
+                      thumbColor: AppStyles.textPrimary,
                       thumbShape: const RoundSliderThumbShape(
                         enabledThumbRadius: 5,
                       ),
@@ -126,11 +123,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                 ),
                 Text(
                   '${transpose >= 0 ? '+' : ''}${transpose.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 11,
-                    color: Color(0xFFFF9500),
-                  ),
+                  style: AppStyles.monoValue(AppStyles.accentOrange),
                 ),
               ],
             ),
@@ -166,13 +159,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                             // Step number
                             Text(
                               '${i + 1}',
-                              style: TextStyle(
-                                fontFamily: 'RobotoMono',
-                                fontSize: 9,
-                                color: isSelected
-                                    ? const Color(0xFF00FF9C)
-                                    : const Color(0xFF333333),
-                              ),
+                              style: AppStyles.stepNumber(selected: isSelected),
                             ),
                             const SizedBox(height: 4),
                             // Step cell
@@ -184,7 +171,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                                   ),
                                   border: Border.all(
                                     color: isSelected
-                                        ? const Color(0xFF00FF9C)
+                                        ? AppStyles.accentMint
                                         : cutoffColor.withValues(alpha: 0.3),
                                     width: isSelected ? 1.5 : 1,
                                   ),
@@ -209,13 +196,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                             // Pitch value
                             Text(
                               pitches[i].toStringAsFixed(0),
-                              style: TextStyle(
-                                fontFamily: 'RobotoMono',
-                                fontSize: 8,
-                                color: isSelected
-                                    ? const Color(0xFF00FF9C)
-                                    : const Color(0xFF444444),
-                              ),
+                              style: AppStyles.stepPitch(selected: isSelected),
                             ),
                           ],
                         ),
@@ -230,20 +211,15 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFF111111),
-                border: Border.all(color: const Color(0xFF1A1A1A)),
+                color: AppStyles.surface,
+                border: Border.all(color: AppStyles.surfaceRaised),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'STEP ${selectedStep + 1}',
-                    style: const TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 9,
-                      color: Color(0xFF00FF9C),
-                      letterSpacing: 2,
-                    ),
+                    style: AppStyles.stepEditorTitle,
                   ),
                   const SizedBox(height: 12),
                   LabeledSlider(
@@ -252,7 +228,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
                     value: pitches[selectedStep],
                     min: 10,
                     max: 80,
-                    color: const Color(0xFF00FF9C),
+                    color: AppStyles.accentMint,
                     labelWidth: 56,
                     displayWidth: 64,
                     displayFontSize: 10,
@@ -283,7 +259,7 @@ class _StepSeqPageState extends State<StepSeqPage> with SynthPageAudioMixin {
               ),
             ),
             const SizedBox(height: 16),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF00FF9C)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentMint),
           ],
         ),
       ),

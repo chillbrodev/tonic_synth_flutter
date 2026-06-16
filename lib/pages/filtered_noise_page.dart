@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -47,7 +48,7 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAud
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'NOISE FILTER'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -90,7 +91,7 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAud
               ],
             ),
             const SizedBox(height: 16),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
           ],
         ),
       ),
@@ -108,22 +109,10 @@ class _CoordRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          '$label  ',
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF555555),
-            letterSpacing: 1,
-          ),
-        ),
+        Text('$label  ', style: AppStyles.coordRowLabel),
         Text(
           value,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 12,
-            color: Color(0xFF9B59B6),
-          ),
+          style: AppStyles.monoValue(AppStyles.accentPurple, fontSize: 12),
         ),
       ],
     );
@@ -141,13 +130,7 @@ class _NoiseFilterPainter extends CustomPainter {
   final double q; // 0..1
   final bool isPlaying;
 
-  static const _bandColors = [
-    Color(0xFF9B59B6),
-    Color(0xFF8E44AD),
-    Color(0xFF7D3C98),
-    Color(0xFF6C3483),
-    Color(0xFF5B2C6F),
-  ];
+  static const _bandColors = AppStyles.purpleBands;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -179,26 +162,26 @@ class _NoiseFilterPainter extends CustomPainter {
       Offset(cx, 0),
       Offset(cx, size.height),
       Paint()
-        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..color = AppStyles.accentPurple.withValues(alpha: 0.3)
         ..strokeWidth = 1,
     );
     canvas.drawLine(
       Offset(0, cy),
       Offset(size.width, cy),
       Paint()
-        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..color = AppStyles.accentPurple.withValues(alpha: 0.3)
         ..strokeWidth = 1,
     );
     canvas.drawCircle(
       Offset(cx, cy),
       8,
-      Paint()..color = const Color(0xFF9B59B6),
+      Paint()..color = AppStyles.accentPurple,
     );
     canvas.drawCircle(
       Offset(cx, cy),
       16,
       Paint()
-        ..color = const Color(0xFF9B59B6).withValues(alpha: 0.3)
+        ..color = AppStyles.accentPurple.withValues(alpha: 0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -44,7 +45,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'COMPRESSOR'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -73,7 +74,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               value: threshold,
               min: -60,
               max: 0,
-              color: const Color(0xFFFF4444),
+              color: AppStyles.accentRed,
               onChanged: (v) {
                 setState(() => threshold = v);
                 onResult(synth.setThreshold(v));
@@ -86,7 +87,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               value: ratio,
               min: 1,
               max: 64,
-              color: const Color(0xFFFF4444),
+              color: AppStyles.accentRed,
               onChanged: (v) {
                 setState(() => ratio = v);
                 onResult(synth.setRatio(v));
@@ -99,7 +100,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               value: attackTime,
               min: 0.001,
               max: 0.1,
-              color: const Color(0xFF00FF9C),
+              color: AppStyles.accentMint,
               onChanged: (v) {
                 setState(() => attackTime = v);
                 onResult(synth.setAttackTime(v));
@@ -112,7 +113,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               value: releaseTime,
               min: 0.01,
               max: 0.08,
-              color: const Color(0xFF00FF9C),
+              color: AppStyles.accentMint,
               onChanged: (v) {
                 setState(() => releaseTime = v);
                 onResult(synth.setReleaseTime(v));
@@ -125,7 +126,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               value: gain,
               min: 0,
               max: 36,
-              color: const Color(0xFFFF9500),
+              color: AppStyles.accentOrange,
               onChanged: (v) {
                 setState(() => gain = v);
                 onResult(synth.setGain(v));
@@ -135,15 +136,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
             // Bypass toggle
             Row(
               children: [
-                const Text(
-                  'BYPASS',
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 9,
-                    color: Color(0xFF555555),
-                    letterSpacing: 2,
-                  ),
-                ),
+                const Text('BYPASS', style: AppStyles.arcDialLabel),
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
@@ -155,8 +148,8 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
                     height: 24,
                     decoration: BoxDecoration(
                       color: bypass
-                          ? const Color(0xFFFF4444)
-                          : const Color(0xFF2A2A2A),
+                          ? AppStyles.accentRed
+                          : AppStyles.trackInactive,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: AnimatedAlign(
@@ -169,7 +162,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
                         height: 20,
                         margin: const EdgeInsets.all(2),
                         decoration: const BoxDecoration(
-                          color: Colors.white,
+                          color: AppStyles.textPrimary,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -179,7 +172,7 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               ],
             ),
             const SizedBox(height: 32),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF4444)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentRed),
           ],
         ),
       ),
@@ -204,7 +197,7 @@ class _CompressorCurvePainter extends CustomPainter {
 
     // Grid
     final gridPaint = Paint()
-      ..color = const Color(0xFF1A1A1A)
+      ..color = AppStyles.surfaceRaised
       ..strokeWidth = 1;
     for (int i = 0; i <= 6; i++) {
       final x = i / 6 * size.width;
@@ -218,7 +211,7 @@ class _CompressorCurvePainter extends CustomPainter {
       Offset.zero,
       Offset(size.width, size.height),
       Paint()
-        ..color = const Color(0xFF2A2A2A)
+        ..color = AppStyles.trackInactive
         ..strokeWidth = 1,
     );
 
@@ -229,14 +222,14 @@ class _CompressorCurvePainter extends CustomPainter {
       Offset(threshX, 0),
       Offset(threshX, size.height),
       Paint()
-        ..color = const Color(0xFFFF4444).withValues(alpha: 0.4)
+        ..color = AppStyles.accentRed.withValues(alpha: 0.4)
         ..strokeWidth = 1
         ..strokeStyle = StrokeStyle.dashed,
     );
 
     // Compression curve
     final curvePaint = Paint()
-      ..color = bypass ? const Color(0xFF333333) : const Color(0xFFFF4444)
+      ..color = bypass ? AppStyles.chromeMuted : AppStyles.accentRed
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
@@ -259,12 +252,7 @@ class _CompressorCurvePainter extends CustomPainter {
     final tp = TextPainter(
       text: TextSpan(
         text: bypass ? 'BYPASS' : 'THRESHOLD ${threshold.toStringAsFixed(0)}dB',
-        style: const TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: 9,
-          color: Color(0xFF555555),
-          letterSpacing: 1,
-        ),
+        style: AppStyles.painterLabel(AppStyles.textSecondary),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

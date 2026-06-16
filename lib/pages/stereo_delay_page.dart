@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -49,7 +50,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
     }
 
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'STEREO DELAY'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -78,7 +79,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
                   min: 0,
                   max: 500,
                   display: '${freq.toStringAsFixed(0)}Hz',
-                  color: const Color(0xFF3498DB),
+                  color: AppStyles.accentBlue,
                   dialSize: 90,
                   strokeWidth: 5,
                   displayFontSize: 10,
@@ -94,7 +95,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
                   min: 0,
                   max: 1,
                   display: freqRand.toStringAsFixed(2),
-                  color: const Color(0xFF3498DB),
+                  color: AppStyles.accentBlue,
                   dialSize: 90,
                   strokeWidth: 5,
                   displayFontSize: 10,
@@ -110,7 +111,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
                   min: 0,
                   max: 2,
                   display: '${decay.toStringAsFixed(2)}s',
-                  color: const Color(0xFF3498DB),
+                  color: AppStyles.accentBlue,
                   dialSize: 90,
                   strokeWidth: 5,
                   displayFontSize: 10,
@@ -123,7 +124,7 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
               ],
             ),
             const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF3498DB)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
           ],
         ),
       ),
@@ -144,7 +145,7 @@ class _StereoFieldPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const color = Color(0xFF3498DB);
+    const color = AppStyles.accentBlue;
     final cx = size.width / 2;
     final cy = size.height / 2;
 
@@ -153,7 +154,7 @@ class _StereoFieldPainter extends CustomPainter {
       Offset(cx, 0),
       Offset(cx, size.height),
       Paint()
-        ..color = const Color(0xFF1A1A1A)
+        ..color = AppStyles.surfaceRaised
         ..strokeWidth = 1,
     );
 
@@ -162,12 +163,7 @@ class _StereoFieldPainter extends CustomPainter {
       final tp = TextPainter(
         text: TextSpan(
           text: text,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF333333),
-            letterSpacing: 2,
-          ),
+          style: AppStyles.painterLabel(AppStyles.textDim, letterSpacing: 2),
         ),
         textDirection: TextDirection.ltr,
       )..layout();

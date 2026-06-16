@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -38,7 +39,7 @@ class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'SINE SUM'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -75,27 +76,14 @@ class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
                 children: [
                   Text(
                     pitch.toStringAsFixed(3),
-                    style: const TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 40,
-                      color: Color(0xFFFF9500),
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: AppStyles.heroValue(AppStyles.accentOrange),
                   ),
-                  const Text(
-                    'PITCH',
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 9,
-                      color: Color(0xFF555555),
-                      letterSpacing: 4,
-                    ),
-                  ),
+                  const Text('PITCH', style: AppStyles.heroCaption),
                 ],
               ),
             ),
             const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
           ],
         ),
       ),
@@ -119,7 +107,7 @@ class _JogWheelPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final outerR = size.width / 2 - 4;
     final innerR = outerR - 24;
-    const color = Color(0xFFFF9500);
+    const color = AppStyles.accentOrange;
 
     // Outer ring — filled segment showing pitch position
     final segPaint = Paint()
@@ -132,7 +120,7 @@ class _JogWheelPainter extends CustomPainter {
       center,
       outerR,
       Paint()
-        ..color = const Color(0xFF2A2A2A)
+        ..color = AppStyles.trackInactive
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
@@ -153,18 +141,18 @@ class _JogWheelPainter extends CustomPainter {
         p1,
         p2,
         Paint()
-          ..color = const Color(0xFF222222)
+          ..color = AppStyles.gridLine
           ..strokeWidth = 2,
       );
     }
 
     // Inner disc
-    canvas.drawCircle(center, innerR, Paint()..color = const Color(0xFF0D0D0D));
+    canvas.drawCircle(center, innerR, Paint()..color = AppStyles.background);
     canvas.drawCircle(
       center,
       innerR,
       Paint()
-        ..color = isPlaying ? color.withValues(alpha: 0.4) : const Color(0xFF1A1A1A)
+        ..color = isPlaying ? color.withValues(alpha: 0.4) : AppStyles.surfaceRaised
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );

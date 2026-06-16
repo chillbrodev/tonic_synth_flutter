@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -56,7 +57,7 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'DUCK'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -74,26 +75,19 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _duckFlash
-                      ? const Color(0xFFFF4444).withValues(alpha: 0.15)
+                      ? AppStyles.accentRed.withValues(alpha: 0.15)
                       : Colors.transparent,
                   border: Border.all(
                     color: _duckFlash
-                        ? const Color(0xFFFF4444)
-                        : const Color(0xFF2A2A2A),
+                        ? AppStyles.accentRed
+                        : AppStyles.trackInactive,
                     width: 1.5,
                   ),
                 ),
                 child: Center(
                   child: Text(
                     'DUCK',
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 18,
-                      color: _duckFlash
-                          ? const Color(0xFFFF4444)
-                          : const Color(0xFF333333),
-                      letterSpacing: 4,
-                    ),
+                    style: AppStyles.duckLabel(active: _duckFlash),
                   ),
                 ),
               ),
@@ -117,7 +111,7 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
                   child: CustomPaint(
                     painter: _ArcDialPainter(
                       value: (compRelease - 0.01) / 0.49,
-                      color: const Color(0xFFFF4444),
+                      color: AppStyles.accentRed,
                       displayText:
                           '${(compRelease * 1000).toStringAsFixed(0)}ms',
                     ),
@@ -126,7 +120,7 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
               ),
             ),
             const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF4444)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentRed),
           ],
         ),
       ),
@@ -158,7 +152,7 @@ class _ArcDialPainter extends CustomPainter {
       sweepTotal,
       false,
       Paint()
-        ..color = const Color(0xFF2A2A2A)
+        ..color = AppStyles.trackInactive
         ..style = PaintingStyle.stroke
         ..strokeWidth = 6
         ..strokeCap = StrokeCap.round,
@@ -178,7 +172,7 @@ class _ArcDialPainter extends CustomPainter {
     final tp = TextPainter(
       text: TextSpan(
         text: displayText,
-        style: TextStyle(fontFamily: 'RobotoMono', fontSize: 13, color: color),
+        style: AppStyles.monoValue(color, fontSize: 13),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

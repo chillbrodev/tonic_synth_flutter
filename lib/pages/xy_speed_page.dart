@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -53,7 +54,7 @@ class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'XY SPEED'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -77,11 +78,11 @@ class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
                     ),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF111111),
+                        color: AppStyles.surface,
                         border: Border.all(
                           color: isPlaying
-                              ? const Color(0xFF00FF9C).withValues(alpha: 0.4)
-                              : const Color(0xFF2A2A2A),
+                              ? AppStyles.accentMint.withValues(alpha: 0.4)
+                              : AppStyles.trackInactive,
                           width: 1,
                         ),
                       ),
@@ -124,11 +125,7 @@ class _CoordLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       '$axis  ${value.toStringAsFixed(3)}',
-      style: const TextStyle(
-        fontFamily: 'RobotoMono',
-        fontSize: 12,
-        color: Color(0xFF00FF9C),
-      ),
+      style: AppStyles.coordLabel,
     );
   }
 }
@@ -142,7 +139,7 @@ class _XyPadPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final linePaint = Paint()
-      ..color = const Color(0xFF1A1A1A)
+      ..color = AppStyles.surfaceRaised
       ..strokeWidth = 1;
 
     final x = position.dx * size.width;
@@ -154,7 +151,7 @@ class _XyPadPainter extends CustomPainter {
     for (int i = 0; i < trail.length; i++) {
       final opacity = i / trail.length;
       final trailPaint = Paint()
-        ..color = Color.fromRGBO(0, 255, 156, opacity * 0.4)
+        ..color = AppStyles.accentMint.withValues(alpha: opacity * 0.4)
         ..style = PaintingStyle.fill;
       final radius = 3.0 + (i / trail.length) * 4;
       canvas.drawCircle(
@@ -165,12 +162,12 @@ class _XyPadPainter extends CustomPainter {
     }
 
     final dotPaint = Paint()
-      ..color = const Color(0xFF00FF9C)
+      ..color = AppStyles.accentMint
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(x, y), 8, dotPaint);
 
     final ringPaint = Paint()
-      ..color = const Color(0xFF00FF9C).withValues(alpha: 0.3)
+      ..color = AppStyles.accentMint.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     canvas.drawCircle(Offset(x, y), 16, ringPaint);

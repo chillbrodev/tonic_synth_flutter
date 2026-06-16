@@ -1,4 +1,4 @@
-package com.cbd.tonic_synth_flutter
+package com.uptechstudio.tonic
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -64,7 +65,7 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'WAVETABLE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -76,13 +77,13 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF111111),
-                  border: Border.all(color: const Color(0xFF1A1A1A)),
+                  color: AppStyles.surface,
+                  border: Border.all(color: AppStyles.surfaceRaised),
                 ),
                 child: CustomPaint(
                   painter: _WaveformPainter(
                     samples: _waveform,
-                    color: const Color(0xFFFF9500),
+                    color: AppStyles.accentOrange,
                     isPlaying: isPlaying,
                   ),
                   size: Size.infinite,
@@ -90,7 +91,7 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
               ),
             ),
             const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
           ],
         ),
       ),
@@ -132,7 +133,7 @@ class _WaveformPainter extends CustomPainter {
       Offset(0, midY),
       Offset(size.width, midY),
       Paint()
-        ..color = const Color(0xFF1A1A1A)
+        ..color = AppStyles.surfaceRaised
         ..strokeWidth = 1,
     );
 

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/audio/audio_limits.dart';
 
 const int maxSessionSeconds = kMaxSessionSeconds;
@@ -16,12 +17,7 @@ class RecordingLimitNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       'RECORDINGS LIMITED TO ${kMaxSessionSeconds}s',
-      style: const TextStyle(
-        fontFamily: 'RobotoMono',
-        fontSize: 9,
-        color: Color(0xFF555555),
-        letterSpacing: 2,
-      ),
+      style: AppStyles.recordingLimit,
     );
   }
 }
@@ -58,48 +54,21 @@ Future<bool> confirmDiscardRecordingDialog(BuildContext context) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      backgroundColor: const Color(0xFF1A1A1A),
-      title: const Text(
-        'Discard recording?',
-        style: TextStyle(
-          fontFamily: 'RobotoMono',
-          color: Color(0xFFFF4444),
-          fontSize: 14,
-          letterSpacing: 1,
-        ),
-      ),
+      backgroundColor: AppStyles.surfaceRaised,
+      title: const Text('Discard recording?', style: AppStyles.dialogTitle),
       content: const Text(
         'Leaving this page will stop playback and discard your '
         'in-progress recording.',
-        style: TextStyle(
-          fontFamily: 'RobotoMono',
-          color: Color(0xFFAAAAAA),
-          fontSize: 12,
-          height: 1.4,
-        ),
+        style: AppStyles.dialogBody,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text(
-            'STAY',
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              color: Color(0xFF00FF9C),
-              letterSpacing: 1,
-            ),
-          ),
+          child: const Text('STAY', style: AppStyles.dialogActionStay),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text(
-            'LEAVE',
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              color: Color(0xFFFF4444),
-              letterSpacing: 1,
-            ),
-          ),
+          child: const Text('LEAVE', style: AppStyles.dialogActionLeave),
         ),
       ],
     ),
@@ -114,7 +83,7 @@ class SessionTimerBar extends StatefulWidget {
     required this.getProgress,
     required this.getSecondsElapsed,
     required this.getSecondsRemaining,
-    this.accent = const Color(0xFF00FF9C),
+    this.accent = AppStyles.accentMint,
   });
 
   final bool isActive;
@@ -166,10 +135,10 @@ class _SessionTimerBarState extends State<SessionTimerBar> {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 2,
-            backgroundColor: const Color(0xFF2A2A2A),
+            backgroundColor: AppStyles.trackInactive,
             valueColor: AlwaysStoppedAnimation<Color>(
               nearLimit
-                  ? const Color(0xFFFF4444)
+                  ? AppStyles.accentRed
                   : widget.accent.withValues(alpha: 0.7),
             ),
           ),
@@ -180,21 +149,13 @@ class _SessionTimerBarState extends State<SessionTimerBar> {
           children: [
             Text(
               formatSessionTime(elapsed),
-              style: TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 9,
-                color: nearLimit ? const Color(0xFFFF4444) : widget.accent,
-                letterSpacing: 1,
+              style: AppStyles.sessionElapsed(
+                nearLimit ? AppStyles.accentRed : widget.accent,
               ),
             ),
             Text(
               '-${formatSessionTime(remaining)}',
-              style: const TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 9,
-                color: Color(0xFF555555),
-                letterSpacing: 1,
-              ),
+              style: AppStyles.sessionTimeRemaining,
             ),
           ],
         ),
@@ -221,22 +182,13 @@ class SynthAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       elevation: 0,
-      leading: const BackButton(color: Color(0xFF555555)),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontFamily: 'RobotoMono',
-          color: Color(0xFF00FF9C),
-          fontSize: 12,
-          letterSpacing: 4,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      leading: const BackButton(color: AppStyles.textSecondary),
+      title: Text(title, style: AppStyles.appBarTitle),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: const Color(0xFF1A1A1A), height: 1),
+        child: Container(color: AppStyles.surfaceRaised, height: 1),
       ),
     );
   }
@@ -249,15 +201,7 @@ class SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontFamily: 'RobotoMono',
-        fontSize: 9,
-        color: Color(0xFF555555),
-        letterSpacing: 3,
-      ),
-    );
+    return Text(text, style: AppStyles.sectionLabel);
   }
 }
 
@@ -266,7 +210,7 @@ class PlayButton extends StatelessWidget {
     super.key,
     required this.isPlaying,
     required this.onTap,
-    this.accent = const Color(0xFF00FF9C),
+    this.accent = AppStyles.accentMint,
   });
 
   final bool isPlaying;
@@ -280,21 +224,17 @@ class PlayButton extends StatelessWidget {
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           side: BorderSide(
-            color: isPlaying ? const Color(0xFFFF9500) : accent,
+            color: isPlaying ? AppStyles.accentOrange : accent,
             width: 1,
           ),
-          foregroundColor: isPlaying ? const Color(0xFFFF9500) : accent,
+          foregroundColor: isPlaying ? AppStyles.accentOrange : accent,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         ),
         onPressed: onTap,
         child: Text(
           isPlaying ? 'STOP' : 'PLAY',
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 11,
-            letterSpacing: 2,
-          ),
+          style: AppStyles.playButtonLabel,
         ),
       ),
     );
@@ -337,10 +277,7 @@ class LabeledSlider extends StatelessWidget {
           width: labelWidth,
           child: Text(
             label,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 9,
-              color: const Color(0xFF555555),
+            style: AppStyles.sliderLabel.copyWith(
               letterSpacing: labelLetterSpacing,
             ),
           ),
@@ -349,8 +286,8 @@ class LabeledSlider extends StatelessWidget {
           child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: color,
-              inactiveTrackColor: const Color(0xFF2A2A2A),
-              thumbColor: Colors.white,
+              inactiveTrackColor: AppStyles.trackInactive,
+              thumbColor: AppStyles.thumb,
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
               trackHeight: 1.5,
               overlayShape: SliderComponentShape.noOverlay,
@@ -368,11 +305,7 @@ class LabeledSlider extends StatelessWidget {
           child: Text(
             display,
             textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: displayFontSize,
-              color: color,
-            ),
+            style: AppStyles.monoValue(color, fontSize: displayFontSize),
           ),
         ),
       ],
@@ -389,7 +322,7 @@ class ArcDial extends StatelessWidget {
     required this.max,
     required this.display,
     required this.onChanged,
-    this.color = const Color(0xFF00FF9C),
+    this.color = AppStyles.accentMint,
     this.dialSize = 100,
     this.strokeWidth = 6,
     this.displayFontSize = 13,
@@ -433,15 +366,7 @@ class ArcDial extends StatelessWidget {
           ),
         ),
         SizedBox(height: labelSpacing),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 9,
-            color: Color(0xFF555555),
-            letterSpacing: 2,
-          ),
-        ),
+        Text(label, style: AppStyles.arcDialLabel),
       ],
     );
   }
@@ -470,7 +395,7 @@ class ArcDialPainter extends CustomPainter {
     const sweepTotal = math.pi * 1.5;
 
     final trackPaint = Paint()
-      ..color = const Color(0xFF2A2A2A)
+      ..color = AppStyles.trackInactive
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -500,12 +425,7 @@ class ArcDialPainter extends CustomPainter {
     final textPainter = TextPainter(
       text: TextSpan(
         text: displayText,
-        style: TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: displayFontSize,
-          color: color,
-          fontWeight: FontWeight.w400,
-        ),
+        style: AppStyles.monoValue(color, fontSize: displayFontSize),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
@@ -592,7 +512,7 @@ class _RecordingControlsState extends State<RecordingControls> {
             getProgress: widget.getRecordingProgress,
             getSecondsElapsed: widget.getRecordingElapsed,
             getSecondsRemaining: widget.getRecordingRemaining,
-            accent: const Color(0xFFFF4444),
+            accent: AppStyles.accentRed,
           ),
           const SizedBox(height: 8),
         ],
@@ -607,13 +527,13 @@ class _RecordingControlsState extends State<RecordingControls> {
             style: OutlinedButton.styleFrom(
               side: BorderSide(
                 color: widget.isRecording || widget.isPlaying
-                    ? const Color(0xFFFF4444)
-                    : const Color(0xFF333333),
+                    ? AppStyles.accentRed
+                    : AppStyles.chromeMuted,
                 width: 1,
               ),
               foregroundColor: widget.isRecording || widget.isPlaying
-                  ? const Color(0xFFFF4444)
-                  : const Color(0xFF333333),
+                  ? AppStyles.accentRed
+                  : AppStyles.textInactive,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(2),
@@ -637,17 +557,13 @@ class _RecordingControlsState extends State<RecordingControls> {
                       : Icons.fiber_manual_record,
                   size: 14,
                   color: widget.isRecording || widget.isPlaying
-                      ? const Color(0xFFFF4444)
-                      : const Color(0xFF333333),
+                      ? AppStyles.accentRed
+                      : AppStyles.textInactive,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   widget.isRecording ? 'STOP REC' : 'RECORD',
-                  style: const TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 11,
-                    letterSpacing: 2,
-                  ),
+                  style: AppStyles.recordButtonLabel,
                 ),
               ],
             ),
@@ -661,8 +577,8 @@ class _RecordingControlsState extends State<RecordingControls> {
             width: double.infinity,
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF3498DB), width: 1),
-                foregroundColor: const Color(0xFF3498DB),
+                side: const BorderSide(color: AppStyles.accentBlue, width: 1),
+                foregroundColor: AppStyles.accentBlue,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(2),
@@ -672,11 +588,7 @@ class _RecordingControlsState extends State<RecordingControls> {
               icon: const Icon(Icons.ios_share, size: 14),
               label: const Text(
                 'EXPORT WAV',
-                style: TextStyle(
-                  fontFamily: 'RobotoMono',
-                  fontSize: 11,
-                  letterSpacing: 2,
-                ),
+                style: AppStyles.exportButtonLabel,
               ),
             ),
           ),

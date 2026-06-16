@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -46,7 +47,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'REVERB'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -79,7 +80,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: decayTime,
               min: 0.1,
               max: 10,
-              color: const Color(0xFF3498DB),
+              color: AppStyles.accentBlue,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => decayTime = v);
@@ -93,7 +94,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: size,
               min: 0,
               max: 1,
-              color: const Color(0xFF3498DB),
+              color: AppStyles.accentBlue,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => size = v);
@@ -107,7 +108,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: shape,
               min: 0,
               max: 1,
-              color: const Color(0xFF3498DB),
+              color: AppStyles.accentBlue,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => shape = v);
@@ -121,7 +122,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: density,
               min: 0,
               max: 1,
-              color: const Color(0xFF3498DB),
+              color: AppStyles.accentBlue,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => density = v);
@@ -135,7 +136,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: stereo,
               min: 0,
               max: 1,
-              color: const Color(0xFF3498DB),
+              color: AppStyles.accentBlue,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => stereo = v);
@@ -151,7 +152,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: dry,
               min: -60,
               max: 0,
-              color: const Color(0xFF00FF9C),
+              color: AppStyles.accentMint,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => dry = v);
@@ -165,7 +166,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               value: wet,
               min: -60,
               max: 0,
-              color: const Color(0xFFFF9500),
+              color: AppStyles.accentOrange,
               displayWidth: 52,
               onChanged: (v) {
                 setState(() => wet = v);
@@ -173,7 +174,7 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
               },
             ),
             const SizedBox(height: 32),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF3498DB)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
           ],
         ),
       ),
@@ -204,7 +205,7 @@ class _RoomPainter extends CustomPainter {
     final r = maxR * (0.3 + size * 0.7);
 
     // Interpolate between circle (shape=1) and rectangle (shape=0)
-    const color = Color(0xFF3498DB);
+    const color = AppStyles.accentBlue;
 
     final path = Path();
     const steps = 60;
@@ -257,11 +258,7 @@ class _RoomPainter extends CustomPainter {
     final tp = TextPainter(
       text: TextSpan(
         text: '${decayTime.toStringAsFixed(1)}s',
-        style: TextStyle(
-          fontFamily: 'RobotoMono',
-          fontSize: 11,
-          color: color.withValues(alpha: 0.6),
-        ),
+        style: AppStyles.monoValue(color.withValues(alpha: 0.6), fontSize: 11),
       ),
       textDirection: TextDirection.ltr,
     )..layout();

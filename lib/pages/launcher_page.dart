@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'fm_drone_page.dart';
 import 'xy_speed_page.dart';
 import 'delay_test_page.dart';
@@ -35,85 +36,85 @@ class LauncherPage extends StatelessWidget {
     _SynthCard(
       name: 'FM DRONE',
       description: 'Carrier · Modulation · LFO',
-      accent: const Color(0xFF00FF9C),
+      accent: AppStyles.accentMint,
       builder: () => const FmDronePage(),
     ),
     _SynthCard(
       name: 'XY SPEED',
       description: 'Gesture-controlled filter',
-      accent: const Color(0xFF00FF9C),
+      accent: AppStyles.accentMint,
       builder: () => const XySpeedPage(),
     ),
     _SynthCard(
       name: 'DELAY SEQ',
       description: 'Step sequencer · Delay',
-      accent: const Color(0xFF00FF9C),
+      accent: AppStyles.accentMint,
       builder: () => const DelayTestPage(),
     ),
     _SynthCard(
       name: 'WAVETABLE',
       description: 'Arbitrary lookup oscillator',
-      accent: const Color(0xFFFF9500),
+      accent: AppStyles.accentOrange,
       builder: () => const ArbitraryTablePage(),
     ),
     _SynthCard(
       name: 'BANDLIMITED',
       description: 'Aliased vs bandlimited',
-      accent: const Color(0xFFFF9500),
+      accent: AppStyles.accentOrange,
       builder: () => const BandlimitedOscPage(),
     ),
     _SynthCard(
       name: 'COMPRESSOR',
       description: '808 snare · Knee curve',
-      accent: const Color(0xFFFF4444),
+      accent: AppStyles.accentRed,
       builder: () => const CompressorTestPage(),
     ),
     _SynthCard(
       name: 'DUCK',
       description: 'Sidechain compression',
-      accent: const Color(0xFFFF4444),
+      accent: AppStyles.accentRed,
       builder: () => const CompressorDuckingPage(),
     ),
     _SynthCard(
       name: 'NOISE FILTER',
       description: 'Pink noise · BPF bank',
-      accent: const Color(0xFF9B59B6),
+      accent: AppStyles.accentPurple,
       builder: () => const FilteredNoisePage(),
     ),
     _SynthCard(
       name: 'LF NOISE',
       description: 'Noise-modulated sine',
-      accent: const Color(0xFF9B59B6),
+      accent: AppStyles.accentPurple,
       builder: () => const LfNoisePage(),
     ),
     _SynthCard(
       name: 'REVERB',
       description: 'Room · Decay · Density',
-      accent: const Color(0xFF3498DB),
+      accent: AppStyles.accentBlue,
       builder: () => const ReverbTestPage(),
     ),
     _SynthCard(
       name: 'STEP SEQ',
       description: '8-step · Pitch · Filter',
-      accent: const Color(0xFF00FF9C),
+      accent: AppStyles.accentMint,
       builder: () => const StepSeqPage(),
     ),
     _SynthCard(
       name: 'SINE SUM',
       description: '10 detuned sine waves',
-      accent: const Color(0xFFFF9500),
+      accent: AppStyles.accentOrange,
       builder: () => const SineSumPage(),
     ),
     _SynthCard(
       name: 'STEREO DLY',
       description: 'Panned stereo echo',
-      accent: const Color(0xFF3498DB),
+      accent: AppStyles.accentBlue,
       builder: () => const StereoDelayPage(),
     ),
     _SynthCard(
       name: 'SNAP SCALE',
       description: 'Melodic step sequencer',
-      accent: const Color(0xFF9B59B6),
+      accent: AppStyles.accentPurple,
       builder: () => const SnapToScalePage(),
     ),
   ];
@@ -121,23 +122,14 @@ class LauncherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D0D0D),
+        backgroundColor: AppStyles.background,
         elevation: 0,
-        title: const Text(
-          'TONIC',
-          style: TextStyle(
-            fontFamily: 'RobotoMono',
-            color: Color(0xFF00FF9C),
-            fontSize: 14,
-            letterSpacing: 6,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        title: const Text('TONIC', style: AppStyles.launcherAppTitle),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: const Color(0xFF1A1A1A), height: 1),
+          child: Container(color: AppStyles.surfaceRaised, height: 1),
         ),
       ),
       body: GridView.builder(
@@ -168,8 +160,8 @@ class _SynthCardWidget extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF111111),
-          border: Border.all(color: const Color(0xFF1A1A1A)),
+          color: AppStyles.surface,
+          border: Border.all(color: AppStyles.surfaceRaised),
           borderRadius: BorderRadius.circular(4),
         ),
         padding: const EdgeInsets.all(16),
@@ -189,32 +181,15 @@ class _SynthCardWidget extends StatelessWidget {
                 const Spacer(),
                 Icon(
                   Icons.chevron_right,
-                  color: const Color(0xFF333333),
+                  color: AppStyles.iconMuted,
                   size: 14,
                 ),
               ],
             ),
             const Spacer(),
-            Text(
-              card.name,
-              style: const TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 12,
-                color: Colors.white,
-                letterSpacing: 1.5,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(card.name, style: AppStyles.launcherCardTitle),
             const SizedBox(height: 4),
-            Text(
-              card.description,
-              style: const TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 9,
-                color: Color(0xFF555555),
-                letterSpacing: 0.5,
-              ),
-            ),
+            Text(card.description, style: AppStyles.launcherCardDescription),
           ],
         ),
       ),

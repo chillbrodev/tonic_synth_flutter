@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -35,7 +36,7 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'BANDLIMITED'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -56,9 +57,9 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
             // Big crossfade slider
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                activeTrackColor: const Color(0xFFFF9500),
-                inactiveTrackColor: const Color(0xFF2A2A2A),
-                thumbColor: Colors.white,
+                activeTrackColor: AppStyles.accentOrange,
+                inactiveTrackColor: AppStyles.trackInactive,
+                thumbColor: AppStyles.textPrimary,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
                 trackHeight: 3,
                 overlayShape: SliderComponentShape.noOverlay,
@@ -81,19 +82,14 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
                     : blend > 0.9
                     ? 'FULL BANDLIMIT'
                     : '${(blend * 100).toStringAsFixed(0)}% BLEND',
-                style: const TextStyle(
-                  fontFamily: 'RobotoMono',
-                  fontSize: 20,
-                  color: Color(0xFFFF9500),
-                  letterSpacing: 2,
-                ),
+                style: AppStyles.largeAccent,
               ),
             ),
             // Alias indicator — jagged line when aliased, smooth when bandlimited
             const SizedBox(height: 32),
             _AliasIndicator(blend: blend),
             const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFFFF9500)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
           ],
         ),
       ),
@@ -109,15 +105,7 @@ class _ModeLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontFamily: 'RobotoMono',
-        fontSize: 10,
-        color: active ? const Color(0xFFFF9500) : const Color(0xFF333333),
-        letterSpacing: 2,
-      ),
-    );
+    return Text(text, style: AppStyles.modeLabel(active: active));
   }
 }
 
@@ -145,7 +133,7 @@ class _BlendWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFFF9500)
+      ..color = AppStyles.accentOrange
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 

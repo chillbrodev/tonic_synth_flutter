@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -44,7 +45,7 @@ class _LfNoisePageState extends State<LfNoisePage> with SynthPageAudioMixin {
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'LF NOISE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -82,17 +83,15 @@ class _LfNoisePageState extends State<LfNoisePage> with SynthPageAudioMixin {
             Center(
               child: Text(
                 '${noiseFreq.toStringAsFixed(0)} Hz',
-                style: const TextStyle(
-                  fontFamily: 'RobotoMono',
+                style: AppStyles.heroValue(
+                  AppStyles.accentPurple,
                   fontSize: 32,
-                  color: Color(0xFF9B59B6),
-                  fontWeight: FontWeight.w300,
                   letterSpacing: 2,
                 ),
               ),
             ),
             const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
           ],
         ),
       ),
@@ -115,14 +114,14 @@ class _RotaryKnobPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 16;
-    const color = Color(0xFF9B59B6);
+    const color = AppStyles.accentPurple;
 
     // Outer ring
     canvas.drawCircle(
       center,
       radius + 4,
       Paint()
-        ..color = const Color(0xFF1A1A1A)
+        ..color = AppStyles.surfaceRaised
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
@@ -134,7 +133,7 @@ class _RotaryKnobPainter extends CustomPainter {
       math.pi * 1.5,
       false,
       Paint()
-        ..color = const Color(0xFF2A2A2A)
+        ..color = AppStyles.trackInactive
         ..style = PaintingStyle.stroke
         ..strokeWidth = 8
         ..strokeCap = StrokeCap.round,
@@ -158,7 +157,7 @@ class _RotaryKnobPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       radius - 12,
-      Paint()..color = const Color(0xFF1A1A1A),
+      Paint()..color = AppStyles.surfaceRaised,
     );
 
     // Indicator line
@@ -190,7 +189,7 @@ class _RotaryKnobPainter extends CustomPainter {
         inner,
         outer,
         Paint()
-          ..color = const Color(0xFF333333)
+          ..color = AppStyles.chromeMuted
           ..strokeWidth = 1,
       );
     }

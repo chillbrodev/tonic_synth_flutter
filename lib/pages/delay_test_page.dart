@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -55,7 +56,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'DELAY SEQ'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -77,7 +78,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
                   min: 0.001,
                   max: 1.0,
                   display: '${(delayTime * 1000).toStringAsFixed(0)}ms',
-                  color: const Color(0xFF00FF9C),
+                  color: AppStyles.accentMint,
                   onChanged: (v) {
                     setState(() => delayTime = v);
                     onResult(synth.setDelayTime(v));
@@ -89,7 +90,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
                   min: 0,
                   max: 0.95,
                   display: feedback.toStringAsFixed(2),
-                  color: const Color(0xFF00FF9C),
+                  color: AppStyles.accentMint,
                   onChanged: (v) {
                     setState(() => feedback = v);
                     onResult(synth.setFeedback(v));
@@ -107,7 +108,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
               min: 0,
               max: 1,
               displayWidth: 52,
-              color: const Color(0xFF00FF9C),
+              color: AppStyles.accentMint,
               onChanged: (v) {
                 setState(() => delayMix = v);
                 onResult(synth.setDelayMix(v));
@@ -121,7 +122,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
               min: 0.05,
               max: 0.25,
               displayWidth: 52,
-              color: const Color(0xFF00FF9C),
+              color: AppStyles.accentMint,
               onChanged: (v) {
                 setState(() => decayTime = v);
                 onResult(synth.setDecayTime(v));
@@ -135,7 +136,7 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
               min: -60,
               max: 0,
               displayWidth: 52,
-              color: const Color(0xFFFF9500),
+              color: AppStyles.accentOrange,
               onChanged: (v) {
                 setState(() => volume = v);
                 onResult(synth.setVolume(v));
@@ -171,26 +172,9 @@ class _BpmCounter extends StatelessWidget {
           onAdjustTempo: onAdjustTempo,
         ),
         const SizedBox(width: 12),
-        Text(
-          tempo.toStringAsFixed(0),
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 72,
-            color: Color(0xFF00FF9C),
-            fontWeight: FontWeight.w300,
-            height: 1,
-          ),
-        ),
+        Text(tempo.toStringAsFixed(0), style: AppStyles.bpmValue),
         const SizedBox(width: 8),
-        const Text(
-          'BPM',
-          style: TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 11,
-            color: Color(0xFF555555),
-            letterSpacing: 2,
-          ),
-        ),
+        const Text('BPM', style: AppStyles.bpmUnit),
         const SizedBox(width: 12),
         _TempoButton(
           icon: Icons.add,
@@ -226,12 +210,12 @@ class _TempoButton extends StatelessWidget {
         width: large ? 44 : 32,
         height: large ? 44 : 32,
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF2A2A2A)),
+          border: Border.all(color: AppStyles.trackInactive),
           borderRadius: BorderRadius.circular(2),
         ),
         child: Icon(
           icon,
-          color: const Color(0xFF00FF9C),
+          color: AppStyles.accentMint,
           size: large ? 18 : 14,
         ),
       ),

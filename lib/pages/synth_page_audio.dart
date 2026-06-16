@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 
@@ -103,13 +104,13 @@ class SynthAudioControls extends StatelessWidget {
     required this.onRecord,
     required this.onStopRecord,
     required this.onShare,
-    this.accent = const Color(0xFF00FF9C),
+    this.accent = AppStyles.accentMint,
   });
 
   factory SynthAudioControls.fromMixin(
     SynthPageAudioMixin audioMixin, {
     Key? key,
-    Color accent = const Color(0xFF00FF9C),
+    Color accent = AppStyles.accentMint,
   }) {
     return SynthAudioControls(
       key: key,

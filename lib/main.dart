@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:tonic_synth_flutter/ffi/gen/tonic_native.g.dart';
 import 'package:tonic_synth_flutter/pages/launcher_page.dart';
@@ -19,7 +20,7 @@ class TonicApp extends StatelessWidget {
       title: 'Tonic Synth',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0D0D0D),
+        scaffoldBackgroundColor: AppStyles.background,
       ),
       home: const LauncherPage(),
     );

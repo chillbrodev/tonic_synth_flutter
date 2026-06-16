@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/pages/page_helpers.dart';
 import 'package:tonic_synth_flutter/pages/synth_page_audio.dart';
 import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
@@ -66,7 +67,7 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
   @override
   Widget build(BuildContext context) {
     return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: AppStyles.background,
       appBar: SynthAppBar(title: 'SNAP SCALE'),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -92,7 +93,7 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
               value: speed,
               min: 0,
               max: 2,
-              color: const Color(0xFF9B59B6),
+              color: AppStyles.accentPurple,
               labelWidth: 64,
               displayWidth: 48,
               onChanged: (v) {
@@ -107,7 +108,7 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
               value: stepperStart,
               min: 0,
               max: 1,
-              color: const Color(0xFF9B59B6),
+              color: AppStyles.accentPurple,
               labelWidth: 64,
               displayWidth: 48,
               onChanged: (v) {
@@ -122,7 +123,7 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
               value: stepperSpread,
               min: 0,
               max: 1,
-              color: const Color(0xFF9B59B6),
+              color: AppStyles.accentPurple,
               labelWidth: 64,
               displayWidth: 48,
               onChanged: (v) {
@@ -131,7 +132,7 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
               },
             ),
             const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: const Color(0xFF9B59B6)),
+            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
           ],
         ),
       ),
@@ -172,8 +173,8 @@ class _ScaleGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0A0A0A),
-        border: Border.all(color: const Color(0xFF1A1A1A)),
+        color: AppStyles.backgroundDeep,
+        border: Border.all(color: AppStyles.surfaceRaised),
       ),
       child: Column(
         children: List.generate(_octaves, (oct) {
@@ -189,29 +190,23 @@ class _ScaleGrid extends StatelessWidget {
                     margin: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
                       color: isActive
-                          ? const Color(0xFF9B59B6)
+                          ? AppStyles.accentPurple
                           : inScale
-                          ? const Color(0xFF9B59B6).withValues(alpha: 0.08)
-                          : const Color(0xFF0D0D0D),
+                          ? AppStyles.accentPurple.withValues(alpha: 0.08)
+                          : AppStyles.background,
                       border: Border.all(
                         color: inScale
-                            ? const Color(
-                                0xFF9B59B6,
-                              ).withValues(alpha: isActive ? 1 : 0.3)
-                            : const Color(0xFF1A1A1A),
+                            ? AppStyles.accentPurple.withValues(
+                                alpha: isActive ? 1 : 0.3,
+                              )
+                            : AppStyles.surfaceRaised,
                         width: isActive ? 1.5 : 1,
                       ),
                     ),
                     child: Center(
                       child: Text(
                         inScale ? _noteNames[degree] : '',
-                        style: TextStyle(
-                          fontFamily: 'RobotoMono',
-                          fontSize: 8,
-                          color: isActive
-                              ? Colors.white
-                              : const Color(0xFF9B59B6).withValues(alpha: 0.5),
-                        ),
+                        style: AppStyles.scaleNote(isActive: isActive),
                       ),
                     ),
                   ),
