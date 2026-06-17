@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 const _privacyPolicyUrl =
     'https://www.freeprivacypolicy.com/live/8b468a87-4abf-4f4a-8e9d-7bf321cfc238';
 const _tonicEngineUrl = 'https://github.com/TonicAudio/Tonic';
+const _uptechStudioUrl = 'https://www.uptechstudio.com';
 
 void openSettings(BuildContext context) {
   Navigator.of(
@@ -91,9 +92,19 @@ class SettingsPage extends StatelessWidget {
               onTap: () => _openUrl(context, Uri.parse(_tonicEngineUrl)),
             ),
             const SizedBox(height: 40),
-            const Text(
-              '© 2026 Uptech Studio',
-              style: AppStyles.settingsCopyright,
+            Row(
+              children: [
+                const Text('© 2026 ', style: AppStyles.settingsCopyright),
+                GestureDetector(
+                  onTap: () => _openUrl(context, Uri.parse(_uptechStudioUrl)),
+                  child: Text(
+                    'Uptech Studio',
+                    style: AppStyles.settingsCopyright.copyWith(
+                      color: AppStyles.accentBlue,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
