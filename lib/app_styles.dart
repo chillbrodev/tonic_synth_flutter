@@ -230,6 +230,39 @@ abstract class AppStyles {
     letterSpacing: 1,
   );
 
+  static const TextStyle settingsTitle = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14,
+    color: accentMint,
+    fontWeight: labelWeight,
+    letterSpacing: 2,
+    height: 1.4,
+  );
+
+  static const TextStyle settingsBody = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 12,
+    color: textBody,
+    fontWeight: labelWeight,
+    height: 1.6,
+  );
+
+  static const TextStyle settingsLink = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 11,
+    color: accentBlue,
+    fontWeight: labelWeight,
+    letterSpacing: 1,
+  );
+
+  static const TextStyle settingsCopyright = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 9,
+    color: textSecondary,
+    fontWeight: labelWeight,
+    letterSpacing: 1,
+  );
+
   // ---------------------------------------------------------------------------
   // Typography — helpers
   // ---------------------------------------------------------------------------

@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:tonic_synth_flutter/audio/audio_limits.dart';
+import 'package:tonic_synth_flutter/pages/settings_page.dart';
 
 const int maxSessionSeconds = kMaxSessionSeconds;
 
@@ -172,9 +173,14 @@ String formatSessionTime(double seconds) {
 }
 
 class SynthAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const SynthAppBar({super.key, required this.title});
+  const SynthAppBar({
+    super.key,
+    required this.title,
+    this.showSettingsAction = true,
+  });
 
   final String title;
+  final bool showSettingsAction;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
@@ -186,6 +192,7 @@ class SynthAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       leading: const BackButton(color: AppStyles.textSecondary),
       title: Text(title, style: AppStyles.appBarTitle),
+      actions: showSettingsAction ? const [SettingsNavAction()] : null,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: AppStyles.surfaceRaised, height: 1),

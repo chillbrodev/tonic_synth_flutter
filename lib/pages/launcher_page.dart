@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/app_styles.dart';
+import 'package:tonic_synth_flutter/pages/settings_page.dart';
 import 'fm_drone_page.dart';
 import 'xy_speed_page.dart';
 import 'delay_test_page.dart';
@@ -16,7 +17,6 @@ import 'stereo_delay_page.dart';
 import 'snap_to_scale_page.dart';
 
 class _SynthCard {
-
   const _SynthCard({
     required this.name,
     required this.description,
@@ -126,7 +126,8 @@ class LauncherPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppStyles.background,
         elevation: 0,
-        title: const Text('TONIC', style: AppStyles.launcherAppTitle),
+        title: const Text('TONIC SYNTHS', style: AppStyles.launcherAppTitle),
+        actions: const [SettingsNavAction()],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(color: AppStyles.surfaceRaised, height: 1),
@@ -179,11 +180,7 @@ class _SynthCardWidget extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Icon(
-                  Icons.chevron_right,
-                  color: AppStyles.iconMuted,
-                  size: 14,
-                ),
+                Icon(Icons.chevron_right, color: AppStyles.iconMuted, size: 14),
               ],
             ),
             const Spacer(),
