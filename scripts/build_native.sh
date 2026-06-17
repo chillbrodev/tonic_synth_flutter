@@ -20,7 +20,7 @@ ANDROID_PLATFORM="android-24"
 ANDROID_STL="c++_static"
 BUILD_TYPE="Release"
 ANDROID_ABIS=("arm64-v8a" "armeabi-v7a" "x86_64")
-IOS_MIN_VERSION="16.0"
+IOS_MIN_VERSION="15.6"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
