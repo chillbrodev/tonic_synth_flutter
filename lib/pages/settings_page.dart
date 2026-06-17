@@ -62,21 +62,47 @@ class SettingsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Tonic Synths - Live Synthesizers',
+              'Tonic Synths',
               style: AppStyles.settingsTitle,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
             const Text(
-              'Tonic Synths does not collect any data about your usage. '
-              'It is 100% offline without any diagonostics or telemetry '
-              'data collection. The Tonic C++ engine is part of the public domain.',
+              'Live Synthesizers',
+              style: AppStyles.settingsBody,
+            ),
+            const SizedBox(height: 24),
+            const Text('ABOUT', style: AppStyles.sectionLabel),
+            const SizedBox(height: 12),
+            const Text(
+              'Tonic Synths is a collection of 14 interactive synthesizers '
+              'running live in Flutter on your device. Each synth explores a '
+              'different sound-design technique — FM modulation, wavetable '
+              'oscillators, step sequencers, reverb, sidechain compression, '
+              'and more.',
               style: AppStyles.settingsBody,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Tonic Synths was created to showcase how Dart Hooks and the '
-              'FFI systems work with C++. It just happens to be a cool '
-              'application.',
+              'Audio is rendered in real time by the Tonic C++ synthesis '
+              'engine, bridged to Dart through FFI and Dart Build Hooks. PCM '
+              'audio streams straight to your speaker — no servers, no cloud.',
+              style: AppStyles.settingsBody,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Built as a companion demo for the FlutterCon 2026 talk '
+              '"Hook, Line & Sinker: Dart Hooks", Tonic Synths shows how '
+              'modern Dart tooling can integrate native C++ libraries without '
+              'platform channels. It just happens to be a cool application.',
+              style: AppStyles.settingsBody,
+            ),
+            const SizedBox(height: 32),
+            const Text('PRIVACY', style: AppStyles.sectionLabel),
+            const SizedBox(height: 12),
+            const Text(
+              'Tonic Synths does not collect any data about your usage. '
+              'It is 100% offline without any diagnostics or telemetry '
+              'data collection. The Tonic C++ engine is part of the public domain.',
               style: AppStyles.settingsBody,
             ),
             const SizedBox(height: 32),

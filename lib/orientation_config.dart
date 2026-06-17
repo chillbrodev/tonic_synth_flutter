@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 /// Locks phones to portrait; tablets may rotate to landscape as well.
 abstract final class OrientationConfig {
-  static const _tabletBreakpoint = 600.0;
+  static const double tabletBreakpoint = 600.0;
 
   static const _phoneOrientations = [DeviceOrientation.portraitUp];
 
@@ -27,7 +27,7 @@ abstract final class OrientationConfig {
 
     final view = WidgetsBinding.instance.platformDispatcher.views.first;
     final logicalSize = view.physicalSize / view.devicePixelRatio;
-    final orientations = logicalSize.shortestSide >= _tabletBreakpoint
+    final orientations = logicalSize.shortestSide >= tabletBreakpoint
         ? _tabletOrientations
         : _phoneOrientations;
 

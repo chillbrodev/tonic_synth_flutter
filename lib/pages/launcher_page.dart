@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/app_styles.dart';
+import 'package:tonic_synth_flutter/orientation_config.dart';
 import 'package:tonic_synth_flutter/pages/settings_page.dart';
 import 'fm_drone_page.dart';
 import 'xy_speed_page.dart';
@@ -119,8 +120,18 @@ class LauncherPage extends StatelessWidget {
     ),
   ];
 
+  static int _crossAxisCount(double width) {
+    if (width >= 1000) return 4;
+    if (width >= OrientationConfig.tabletBreakpoint) return 3;
+    return 2;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final crossAxisCount = _crossAxisCount(width);
+    final isTablet = crossAxisCount > 2;
+
     return Scaffold(
       backgroundColor: AppStyles.background,
       appBar: AppBar(
@@ -134,23 +145,27 @@ class LauncherPage extends StatelessWidget {
         ),
       ),
       body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        padding: EdgeInsets.all(isTablet ? 12 : 16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          childAspectRatio: 1.1,
+          childAspectRatio: isTablet ? 1.15 : 1.1,
         ),
         itemCount: _synths.length,
-        itemBuilder: (context, i) => _SynthCardWidget(card: _synths[i]),
+        itemBuilder: (context, i) => _SynthCardWidget(
+          card: _synths[i],
+          compact: isTablet,
+        ),
       ),
     );
   }
 }
 
 class _SynthCardWidget extends StatelessWidget {
-  const _SynthCardWidget({required this.card});
+  const _SynthCardWidget({required this.card, this.compact = false});
   final _SynthCard card;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +180,7 @@ class _SynthCardWidget extends StatelessWidget {
           border: Border.all(color: AppStyles.surfaceRaised),
           borderRadius: BorderRadius.circular(4),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(compact ? 12 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
