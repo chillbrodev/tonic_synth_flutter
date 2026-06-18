@@ -61,39 +61,23 @@ class SettingsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Tonic Synths',
-              style: AppStyles.settingsTitle,
-            ),
+            const Text('Tonic Synths', style: AppStyles.settingsTitle),
             const SizedBox(height: 8),
-            const Text(
-              'Live Synthesizers',
-              style: AppStyles.settingsBody,
-            ),
+            const Text('Live Synthesizers', style: AppStyles.settingsBody),
             const SizedBox(height: 24),
             const Text('ABOUT', style: AppStyles.sectionLabel),
             const SizedBox(height: 12),
             const Text(
               'Tonic Synths is a collection of 14 interactive synthesizers '
-              'running live in Flutter on your device. Each synth explores a '
+              'running live on your device. Each synth explores a '
               'different sound-design technique — FM modulation, wavetable '
               'oscillators, step sequencers, reverb, sidechain compression, '
-              'and more.',
+              'and more. Create, experiment, and explore!',
               style: AppStyles.settingsBody,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Audio is rendered in real time by the Tonic C++ synthesis '
-              'engine, bridged to Dart through FFI and Dart Build Hooks. PCM '
-              'audio streams straight to your speaker — no servers, no cloud.',
-              style: AppStyles.settingsBody,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Built as a companion demo for the FlutterCon 2026 talk '
-              '"Hook, Line & Sinker: Dart Hooks", Tonic Synths shows how '
-              'modern Dart tooling can integrate native C++ libraries without '
-              'platform channels. It just happens to be a cool application.',
+              'Audio is rendered in real time on your device. No servers, no cloud.',
               style: AppStyles.settingsBody,
             ),
             const SizedBox(height: 32),
@@ -102,7 +86,7 @@ class SettingsPage extends StatelessWidget {
             const Text(
               'Tonic Synths does not collect any data about your usage. '
               'It is 100% offline without any diagnostics or telemetry '
-              'data collection. The Tonic C++ engine is part of the public domain.',
+              'data collection.',
               style: AppStyles.settingsBody,
             ),
             const SizedBox(height: 32),
