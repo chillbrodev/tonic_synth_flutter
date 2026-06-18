@@ -1,7 +1,7 @@
 name: tonic_synth_flutter
 description: "Flutter App with Tonic audio synthesis library"
 publish_to: 'none' 
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: ^3.11.1
