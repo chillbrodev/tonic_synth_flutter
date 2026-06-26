@@ -58,3 +58,6 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 android/release.properties
+
+# Signing
+scripts/signing.env

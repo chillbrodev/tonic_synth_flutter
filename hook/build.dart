@@ -68,13 +68,13 @@ Future<void> _bundleIOS(BuildInput input, BuildOutputBuilder output) async {
     input.packageRoot.resolve(
       'native/libs/ios/libtonic_wrapper.xcframework/'
       '${_xcframeworkSliceDir(isSimulator)}/'
-      'libtonic_wrapper.dylib',
+      'tonic_wrapper.framework/tonic_wrapper',
     ),
   );
 
   if (!dylib.existsSync()) {
     throw StateError(
-      'libtonic_wrapper.dylib not found for iOS $slice.\n'
+      'tonic_wrapper binary not found for iOS $slice.\n'
       'Run scripts/build_native.sh first.',
     );
   }

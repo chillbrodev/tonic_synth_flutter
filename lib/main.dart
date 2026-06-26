@@ -1,3 +1,4 @@
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:tonic_synth_flutter/app_styles.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
@@ -7,6 +8,12 @@ import 'package:tonic_synth_flutter/pages/launcher_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final session = await AudioSession.instance;
+  await session.configure(const AudioSessionConfiguration(
+    avAudioSessionCategory: AVAudioSessionCategory.playback,
+    avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.none,
+    avAudioSessionMode: AVAudioSessionMode.defaultMode,
+  ));
   tonic_set_sample_rate(44100);
   await SoLoud.instance.init();
   await OrientationConfig.apply();

@@ -13,6 +13,8 @@
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		9587DC312FEF162900147207 /* libtonic_wrapper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9587DC302FEF162900147207 /* libtonic_wrapper.xcframework */; };
+		9587DC322FEF162900147207 /* libtonic_wrapper.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9587DC302FEF162900147207 /* libtonic_wrapper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -35,6 +37,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9587DC322FEF162900147207 /* libtonic_wrapper.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +55,7 @@
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		9587DC302FEF162900147207 /* libtonic_wrapper.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libtonic_wrapper.xcframework; path = ../native/libs/ios/libtonic_wrapper.xcframework; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
+				9587DC312FEF162900147207 /* libtonic_wrapper.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +93,14 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
+		9587DC2F2FEF162900147207 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9587DC302FEF162900147207 /* libtonic_wrapper.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +120,7 @@
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
+				9587DC2F2FEF162900147207 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -166,7 +180,7 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				A1B2C3D41E5F6789012345A7 /* Fix Framework MinimumOSVersion */,
+				B1C2D3E4F5A6789012345B8C /* Mirror app to flat path for Flutter */,
 			);
 			buildRules = (
 			);
@@ -210,7 +224,7 @@
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
-				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
 			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
@@ -275,7 +289,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		A1B2C3D41E5F6789012345A7 /* Fix Framework MinimumOSVersion */ = {
+		B1C2D3E4F5A6789012345B8C /* Mirror app to flat path for Flutter */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -283,12 +297,12 @@
 			);
 			inputPaths = (
 			);
-			name = "Fix Framework MinimumOSVersion";
+			name = "Mirror app to flat path for Flutter";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "for FRAMEWORK in App tonic_wrapper; do\n  PLIST=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/${FRAMEWORK}.framework/Info.plist\"\n  if [ -f \"$PLIST\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :MinimumOSVersion ${IPHONEOS_DEPLOYMENT_TARGET}\" \"$PLIST\" 2>/dev/null || \\\n    /usr/libexec/PlistBuddy -c \"Add :MinimumOSVersion string ${IPHONEOS_DEPLOYMENT_TARGET}\" \"$PLIST\"\n  fi\ndone\n";
+			shellScript = "# Xcode 26.5 puts built products in <CONFIGURATION>-<PLATFORM_NAME>/\n# Flutter 3.44 expects them at <PLATFORM_NAME>/ (no configuration prefix).\n# Derive the flat path by stripping the configuration prefix from BUILT_PRODUCTS_DIR.\nFLAT=\"${BUILT_PRODUCTS_DIR%${CONFIGURATION}-${PLATFORM_NAME}}${PLATFORM_NAME}\"\nif [ \"${BUILT_PRODUCTS_DIR}\" != \"$FLAT\" ] && [ -d \"${BUILT_PRODUCTS_DIR}/Runner.app\" ]; then\n  mkdir -p \"$FLAT\"\n  rsync -a --delete \"${BUILT_PRODUCTS_DIR}/Runner.app\" \"$FLAT/\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -664,7 +678,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
 		};

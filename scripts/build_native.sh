@@ -21,6 +21,7 @@ ANDROID_STL="c++_static"
 BUILD_TYPE="Release"
 ANDROID_ABIS=("arm64-v8a" "armeabi-v7a" "x86_64")
 IOS_MIN_VERSION="15.6"
+IOS_SIGNING_IDENTITY="-"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -37,6 +38,15 @@ exec > "$LOG_FILE" 2>&1
 echo "=== tonic_synth_flutter: build native ==="
 echo "  Started:  $(date)"
 echo ""
+
+# Load signing identity from scripts/signing.env if present
+echo "  Loading iOS Signing Identity from scripts/signing.env"
+SIGNING_ENV="$SCRIPT_DIR/signing.env"
+if [[ -f "$SIGNING_ENV" ]]; then
+    echo "Sourcing Signing Env $SIGNING_ENV"
+    source "$SIGNING_ENV"
+    echo "Using Identity $IOS_SIGNING_IDENTITY"
+fi
 
 # ---------------------------------------------------------------------------
 # Android
@@ -88,7 +98,8 @@ done
 
 echo ""
 echo "=== iOS ==="
-echo "  Min version: $IOS_MIN_VERSION"
+echo "  Min version:      $IOS_MIN_VERSION"
+echo "  Signing identity: $IOS_SIGNING_IDENTITY"
 echo ""
 
 # Locate Xcode SDKs
@@ -126,6 +137,36 @@ cmake --build "$DEVICE_BUILD_DIR" \
 
 echo "  ✓ $DEVICE_OUTPUT_DIR/libtonic_wrapper.dylib"
 
+# Wrap in a proper framework bundle so Xcode can re-sign it on-device.
+DEVICE_FW_DIR="$DEVICE_OUTPUT_DIR/tonic_wrapper.framework"
+mkdir -p "$DEVICE_FW_DIR"
+cp "$DEVICE_OUTPUT_DIR/libtonic_wrapper.dylib" "$DEVICE_FW_DIR/tonic_wrapper"
+install_name_tool -id "@rpath/tonic_wrapper.framework/tonic_wrapper" \
+    "$DEVICE_FW_DIR/tonic_wrapper"
+cat > "$DEVICE_FW_DIR/Info.plist" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>tonic_wrapper</string>
+    <key>CFBundleIdentifier</key>
+    <string>dev.chillbro.tonic-wrapper</string>
+    <key>CFBundleName</key>
+    <string>tonic_wrapper</string>
+    <key>CFBundlePackageType</key>
+    <string>FMWK</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>MinimumOSVersion</key>
+    <string>$IOS_MIN_VERSION</string>
+</dict>
+</plist>
+PLIST
+echo "  ✓ $DEVICE_FW_DIR (framework bundle)"
+
 # --- Simulator (arm64) ---
 echo "--- iOS simulator (arm64) ---"
 
@@ -152,20 +193,63 @@ cmake --build "$SIM_BUILD_DIR" \
 
 echo "  ✓ $SIM_OUTPUT_DIR/libtonic_wrapper.dylib"
 
+# Wrap in a proper framework bundle so Xcode can re-sign it on-device.
+SIM_FW_DIR="$SIM_OUTPUT_DIR/tonic_wrapper.framework"
+mkdir -p "$SIM_FW_DIR"
+cp "$SIM_OUTPUT_DIR/libtonic_wrapper.dylib" "$SIM_FW_DIR/tonic_wrapper"
+install_name_tool -id "@rpath/tonic_wrapper.framework/tonic_wrapper" \
+    "$SIM_FW_DIR/tonic_wrapper"
+cat > "$SIM_FW_DIR/Info.plist" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>tonic_wrapper</string>
+    <key>CFBundleIdentifier</key>
+    <string>dev.chillbro.tonic-wrapper</string>
+    <key>CFBundleName</key>
+    <string>tonic_wrapper</string>
+    <key>CFBundlePackageType</key>
+    <string>FMWK</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>MinimumOSVersion</key>
+    <string>$IOS_MIN_VERSION</string>
+</dict>
+</plist>
+PLIST
+echo "  ✓ $SIM_FW_DIR (framework bundle)"
+
 # --- XCFramework ---
 echo "--- Creating XCFramework ---"
 
 XCFRAMEWORK_PATH="$IOS_OUTPUT/libtonic_wrapper.xcframework"
-
-# Remove stale XCFramework if present
 rm -rf "$XCFRAMEWORK_PATH"
 
 xcodebuild -create-xcframework \
-    -library "$DEVICE_OUTPUT_DIR/libtonic_wrapper.dylib" \
-    -library "$SIM_OUTPUT_DIR/libtonic_wrapper.dylib" \
+    -framework "$DEVICE_FW_DIR" \
+    -framework "$SIM_FW_DIR" \
     -output "$XCFRAMEWORK_PATH"
 
 echo "  ✓ $XCFRAMEWORK_PATH"
+
+# --- Sign XCFramework slices ---
+echo "--- Signing XCFramework ---"
+
+codesign --force --sign "$IOS_SIGNING_IDENTITY" \
+    "$XCFRAMEWORK_PATH/ios-arm64/tonic_wrapper.framework"
+codesign --force --sign "$IOS_SIGNING_IDENTITY" \
+    "$XCFRAMEWORK_PATH/ios-arm64-simulator/tonic_wrapper.framework"
+
+echo "  ✓ XCFramework signed"
+
+# Clean up intermediate slices — XCFramework contains everything
+rm -rf "$DEVICE_OUTPUT_DIR"
+rm -rf "$SIM_OUTPUT_DIR"
+echo "  ✓ Intermediate slices removed"
 
 # ---------------------------------------------------------------------------
 # Symbol verification
@@ -194,7 +278,7 @@ fi
 echo ""
 echo "  iOS device exports:"
 xcrun nm --defined-only --extern-only \
-    "$DEVICE_OUTPUT_DIR/libtonic_wrapper.dylib" \
+    "$XCFRAMEWORK_PATH/ios-arm64/tonic_wrapper.framework/tonic_wrapper" \
     | grep " T _tonic_" | awk '{print "    " $3}'
 
 echo ""
