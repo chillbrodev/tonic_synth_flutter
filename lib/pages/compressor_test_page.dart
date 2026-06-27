@@ -20,7 +20,6 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
   double ratio = 2;
   double attackTime = 0.001;
   double releaseTime = 0.05;
-  double gain = 0;
   bool bypass = false;
 
   @override
@@ -117,19 +116,6 @@ class _CompressorTestPageState extends State<CompressorTestPage> with SynthPageA
               onChanged: (v) {
                 setState(() => releaseTime = v);
                 onResult(synth.setReleaseTime(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'GAIN',
-              display: '${gain.toStringAsFixed(0)}dB',
-              value: gain,
-              min: 0,
-              max: 36,
-              color: AppStyles.accentOrange,
-              onChanged: (v) {
-                setState(() => gain = v);
-                onResult(synth.setGain(v));
               },
             ),
             const SizedBox(height: 24),
