@@ -129,7 +129,7 @@ Three breaking changes in Xcode 26.5 required fixes that are already applied to 
 Xcode 26.5 tightened code-signature verification for embedded frameworks. The iOS native build now produces `tonic_wrapper.framework` bundles (binary + `Info.plist`) inside the XCFramework rather than bare dylibs. If you rebuild the native layer, `scripts/build_native.sh` handles this automatically.
 
 **2. Post-signing plist mutation breaks device install (`0xe8008001`)**
-A custom "Fix Framework MinimumOSVersion" build phase previously patched framework `Info.plist` files after Xcode had already signed them. Xcode 26.5 changed phase ordering so this now invalidates the code signature. The build phase has been removed.
+A custom "Fix Framework MinimumOSVersion" build phase previously patched framework `Info.plist` files after Xcode had already signed them. Xcode 26.5 changed phase ordering so this now invalidates the code signature. The build phase has been removed. See [iOS framework minimum version](#ios-framework-minimum-version) below for how this affects `tonic_wrapper` and `App.framework`.
 
 **3. Build output path changed**
 Xcode 26.5 puts the built app in `${CONFIGURATION}-iphoneos/` (e.g. `Release-iphoneos/`) whereas Flutter 3.44 expects the flat `iphoneos/` path. A post-build script mirrors the `.app` to the expected location after signing.
@@ -211,6 +211,16 @@ Issue filed: [dart-lang/native](https://github.com/dart-lang/native/issues)
 ### iOS: `Accelerate` Framework
 
 Tonic uses `vDSP_*` SIMD intrinsics on Apple platforms, which live in `Accelerate.framework`. This is linked automatically via CMakeLists — no manual Xcode project changes needed.
+
+### iOS Framework Minimum Version
+
+The app's deployment target is iOS 15.6, but embedded frameworks (`tonic_wrapper.framework`, `App.framework`) declare `MinimumOSVersion = 13.0`. This is intentional and not a bug.
+
+Flutter 3.44 hardcodes 13.0 in every framework plist it generates:
+- `App.framework` — Flutter rewrites its plist using `FlutterDarwinPlatform.ios.deploymentTarget()`, which always returns `Version(13, 0, null)`.
+- `tonic_wrapper.framework` — Flutter's native assets system has `const targetIOSVersion = 13` and uses it for all native asset framework plists ([flutter/flutter#145104](https://github.com/flutter/flutter/issues/145104)).
+
+Because the plist cannot be patched after signing (see [Xcode 26.5 item 2](#xcode-265-compatibility)), the `tonic_wrapper` binary must be compiled with a matching minos. `build_native.sh` therefore uses `IOS_MIN_VERSION=13.0` for the iOS build, even though the app requires 15.6. Apple's upload validator requires plist `MinimumOSVersion` ≥ binary `minos`; a mismatch triggers rejection. The app's 15.6 deployment target still enforces the true install floor — no device on iOS < 15.6 can install the app regardless of framework minos values.
 
 ### `@Native` Annotations
 

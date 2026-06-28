@@ -20,7 +20,11 @@ ANDROID_PLATFORM="android-24"
 ANDROID_STL="c++_static"
 BUILD_TYPE="Release"
 ANDROID_ABIS=("arm64-v8a" "armeabi-v7a" "x86_64")
-IOS_MIN_VERSION="15.6"
+# Flutter 3.44 native assets hardcode MinimumOSVersion=13.0 in the generated
+# framework plist (flutter/flutter#145104). The binary minos must match or
+# Apple validation flags a binary/plist mismatch. Our app deployment target
+# (15.6) enforces the real minimum; 13.0 here is the binary floor only.
+IOS_MIN_VERSION="13.0"
 IOS_SIGNING_IDENTITY="-"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

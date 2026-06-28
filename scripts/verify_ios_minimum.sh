@@ -17,8 +17,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Frameworks we patch to match the app minimum during the Xcode build.
-MANAGED_FRAMEWORKS=("App" "tonic_wrapper")
+# Flutter 3.44 hardcodes MinimumOSVersion=13.0 in all generated framework
+# plists (App.framework via darwin.dart, native assets via native_assets.dart
+# targetIOSVersion constant — flutter/flutter#145104). Post-sign patching is
+# no longer done because it invalidates code signatures. Both frameworks will
+# report plist=13.0 and are expected to; they are not errors.
+MANAGED_FRAMEWORKS=()
 
 ERRORS=0
 WARNINGS=0
@@ -71,6 +75,7 @@ framework_binary() {
 
 is_managed_framework() {
     local name="$1"
+    [[ ${#MANAGED_FRAMEWORKS[@]} -eq 0 ]] && return 1
     local managed
     for managed in "${MANAGED_FRAMEWORKS[@]}"; do
         [[ "$name" == "$managed" ]] && return 0
@@ -125,7 +130,10 @@ check_source_files() {
     local -a found=()
     [[ -n "$PODFILE_MIN" ]] && found+=("Podfile:$PODFILE_MIN")
     [[ "$APP_FW_MIN" != "MISSING" && -n "$APP_FW_MIN" ]] && found+=("AppFrameworkInfo.plist:$APP_FW_MIN")
-    [[ -n "$BUILD_NATIVE_MIN" ]] && found+=("build_native.sh:$BUILD_NATIVE_MIN")
+    # build_native.sh IOS_MIN_VERSION is intentionally 13.0 (Flutter 3.44 hardcodes
+    # 13.0 in native asset framework plists; binary minos must match the plist).
+    # It is informational only and excluded from the app-minimum consistency check.
+    [[ -n "$BUILD_NATIVE_MIN" ]] && info "build_native.sh (framework binary floor, not app min):$BUILD_NATIVE_MIN"
 
     for entry in "${found[@]}"; do
         info "$entry"
