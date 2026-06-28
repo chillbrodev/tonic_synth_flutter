@@ -14,7 +14,8 @@ class CompressorDuckingPage extends StatefulWidget {
   State<CompressorDuckingPage> createState() => _CompressorDuckingPageState();
 }
 
-class _CompressorDuckingPageState extends State<CompressorDuckingPage> with SynthPageAudioMixin {
+class _CompressorDuckingPageState extends State<CompressorDuckingPage>
+    with SynthPageAudioMixin {
   late final CompressorDuckingSynth synth;
   double compRelease = 0.025;
   bool _duckFlash = false;
@@ -56,80 +57,82 @@ class _CompressorDuckingPageState extends State<CompressorDuckingPage> with Synt
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'DUCK'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('SIDECHAIN COMPRESSOR · 120 BPM'),
-            const Spacer(),
-            // DUCK flash indicator
-            Center(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 60),
-                width: 140,
-                height: 140,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _duckFlash
-                      ? AppStyles.accentRed.withValues(alpha: 0.15)
-                      : Colors.transparent,
-                  border: Border.all(
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'DUCK'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('SIDECHAIN COMPRESSOR · 120 BPM'),
+              const Spacer(),
+              // DUCK flash indicator
+              Center(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 60),
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
                     color: _duckFlash
-                        ? AppStyles.accentRed
-                        : AppStyles.trackInactive,
-                    width: 1.5,
+                        ? AppStyles.accentRed.withValues(alpha: 0.15)
+                        : Colors.transparent,
+                    border: Border.all(
+                      color: _duckFlash
+                          ? AppStyles.accentRed
+                          : AppStyles.trackInactive,
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Text(
-                    'DUCK',
-                    style: AppStyles.duckLabel(active: _duckFlash),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 48),
-            const SectionLabel('COMP RELEASE'),
-            const SizedBox(height: 24),
-            // Arc dial
-            Center(
-              child: GestureDetector(
-                onPanUpdate: (d) {
-                  final delta = -d.delta.dy / 150 * 0.49;
-                  setState(() {
-                    compRelease = (compRelease + delta).clamp(0.01, 0.5);
-                  });
-                  synth.setCompRelease(compRelease);
-                },
-                child: SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: CustomPaint(
-                    painter: _ArcDialPainter(
-                      value: (compRelease - 0.01) / 0.49,
-                      color: AppStyles.accentRed,
-                      displayText:
-                          '${(compRelease * 1000).toStringAsFixed(0)}ms',
+                  child: Center(
+                    child: Text(
+                      'DUCK',
+                      style: AppStyles.duckLabel(active: _duckFlash),
                     ),
                   ),
                 ),
               ),
-            ),
-            const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentRed),
-          ],
+              const SizedBox(height: 48),
+              const SectionLabel('COMP RELEASE'),
+              const SizedBox(height: 24),
+              // Arc dial
+              Center(
+                child: GestureDetector(
+                  onPanUpdate: (d) {
+                    final delta = -d.delta.dy / 150 * 0.49;
+                    setState(() {
+                      compRelease = (compRelease + delta).clamp(0.01, 0.5);
+                    });
+                    synth.setCompRelease(compRelease);
+                  },
+                  child: SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: CustomPaint(
+                      painter: _ArcDialPainter(
+                        value: (compRelease - 0.01) / 0.49,
+                        color: AppStyles.accentRed,
+                        displayText:
+                            '${(compRelease * 1000).toStringAsFixed(0)}ms',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              SynthAudioControls.fromMixin(this, accent: AppStyles.accentRed),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _ArcDialPainter extends CustomPainter {
-
   const _ArcDialPainter({
     required this.value,
     required this.color,

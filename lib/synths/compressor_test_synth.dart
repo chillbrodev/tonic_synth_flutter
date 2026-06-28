@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class CompressorTestSynth with TonicSynthMixin {
-
   CompressorTestSynth() : handle = tonic_create_compressor_test() {
     logger.d('[CompressorTestSynth] created');
   }
@@ -25,7 +24,8 @@ class CompressorTestSynth with TonicSynthMixin {
   TonicResult setAttackTime(double seconds) => setParam('attackTime', seconds);
 
   /// Release time in seconds. Range: 0.01..0.08
-  TonicResult setReleaseTime(double seconds) => setParam('releaseTime', seconds);
+  TonicResult setReleaseTime(double seconds) =>
+      setParam('releaseTime', seconds);
 
   /// Makeup gain in dBFS. Range: 0..36
   TonicResult setGain(double db) => setParam('gain', db);

@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class DelayTestSynth with TonicSynthMixin {
-
   DelayTestSynth() : handle = tonic_create_delay_test() {
     logger.d('[DelayTestSynth] created');
   }

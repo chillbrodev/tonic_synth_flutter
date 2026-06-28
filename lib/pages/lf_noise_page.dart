@@ -44,63 +44,68 @@ class _LfNoisePageState extends State<LfNoisePage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'LF NOISE'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('NOISE FREQUENCY'),
-            const Spacer(),
-            Center(
-              child: GestureDetector(
-                onPanUpdate: (d) {
-                  setState(() {
-                    _dialAngle = (_dialAngle - d.delta.dy * 0.01).clamp(
-                      -math.pi * 1.25,
-                      math.pi * 1.25,
-                    );
-                    noiseFreq = _angleToFreq(_dialAngle);
-                  });
-                  synth.setNoiseFreq(noiseFreq);
-                },
-                child: SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: CustomPaint(
-                    painter: _RotaryKnobPainter(
-                      angle: _dialAngle,
-                      freq: noiseFreq,
-                      isPlaying: isPlaying,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'LF NOISE'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('NOISE FREQUENCY'),
+              const Spacer(),
+              Center(
+                child: GestureDetector(
+                  onPanUpdate: (d) {
+                    setState(() {
+                      _dialAngle = (_dialAngle - d.delta.dy * 0.01).clamp(
+                        -math.pi * 1.25,
+                        math.pi * 1.25,
+                      );
+                      noiseFreq = _angleToFreq(_dialAngle);
+                    });
+                    synth.setNoiseFreq(noiseFreq);
+                  },
+                  child: SizedBox(
+                    width: 200,
+                    height: 200,
+                    child: CustomPaint(
+                      painter: _RotaryKnobPainter(
+                        angle: _dialAngle,
+                        freq: noiseFreq,
+                        isPlaying: isPlaying,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            Center(
-              child: Text(
-                '${noiseFreq.toStringAsFixed(0)} Hz',
-                style: AppStyles.heroValue(
-                  AppStyles.accentPurple,
-                  fontSize: 32,
-                  letterSpacing: 2,
+              const SizedBox(height: 32),
+              Center(
+                child: Text(
+                  '${noiseFreq.toStringAsFixed(0)} Hz',
+                  style: AppStyles.heroValue(
+                    AppStyles.accentPurple,
+                    fontSize: 32,
+                    letterSpacing: 2,
+                  ),
                 ),
               ),
-            ),
-            const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
-          ],
+              const Spacer(),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentPurple,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _RotaryKnobPainter extends CustomPainter {
-
   const _RotaryKnobPainter({
     required this.angle,
     required this.freq,

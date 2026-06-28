@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class FilteredNoiseSynth with TonicSynthMixin {
-
   FilteredNoiseSynth() : handle = tonic_create_filtered_noise() {
     logger.d('[FilteredNoiseSynth] created');
   }

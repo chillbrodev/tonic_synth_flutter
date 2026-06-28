@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class StepSeqSynth with TonicSynthMixin {
-
   StepSeqSynth() : handle = tonic_create_step_seq() {
     logger.d('[StepSeqSynth] created');
   }
@@ -21,7 +20,8 @@ class StepSeqSynth with TonicSynthMixin {
   TonicResult setTempo(double bpm) => setParam('tempo', bpm);
 
   /// Transpose in semitones. Range: -6..6
-  TonicResult setTranspose(double semitones) => setParam('transpose', semitones);
+  TonicResult setTranspose(double semitones) =>
+      setParam('transpose', semitones);
 
   /// Set pitch for a step (0-7) as MIDI note. Range: 10..80
   TonicResult setStepPitch(int step, double midi) {

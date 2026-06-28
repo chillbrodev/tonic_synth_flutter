@@ -12,7 +12,8 @@ class BandlimitedOscPage extends StatefulWidget {
   State<BandlimitedOscPage> createState() => _BandlimitedOscPageState();
 }
 
-class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageAudioMixin {
+class _BandlimitedOscPageState extends State<BandlimitedOscPage>
+    with SynthPageAudioMixin {
   late final BandlimitedOscSynth synth;
   double blend = 0.5;
 
@@ -35,65 +36,73 @@ class _BandlimitedOscPageState extends State<BandlimitedOscPage> with SynthPageA
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'BANDLIMITED'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('OSCILLATOR BLEND'),
-            const Spacer(),
-            // Waveform comparison labels
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _ModeLabel(text: 'ALIASED', active: blend < 0.5),
-                _ModeLabel(text: 'BANDLIMITED', active: blend >= 0.5),
-              ],
-            ),
-            const SizedBox(height: 32),
-            // Big crossfade slider
-            SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                activeTrackColor: AppStyles.accentOrange,
-                inactiveTrackColor: AppStyles.trackInactive,
-                thumbColor: AppStyles.textPrimary,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
-                trackHeight: 3,
-                overlayShape: SliderComponentShape.noOverlay,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'BANDLIMITED'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('OSCILLATOR BLEND'),
+              const Spacer(),
+              // Waveform comparison labels
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _ModeLabel(text: 'ALIASED', active: blend < 0.5),
+                  _ModeLabel(text: 'BANDLIMITED', active: blend >= 0.5),
+                ],
               ),
-              child: Slider(
-                value: blend,
-                min: 0,
-                max: 1,
-                onChanged: (v) {
-                  setState(() => blend = v);
-                  synth.setBlend(v);
-                },
+              const SizedBox(height: 32),
+              // Big crossfade slider
+              SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  activeTrackColor: AppStyles.accentOrange,
+                  inactiveTrackColor: AppStyles.trackInactive,
+                  thumbColor: AppStyles.textPrimary,
+                  thumbShape: const RoundSliderThumbShape(
+                    enabledThumbRadius: 12,
+                  ),
+                  trackHeight: 3,
+                  overlayShape: SliderComponentShape.noOverlay,
+                ),
+                child: Slider(
+                  value: blend,
+                  min: 0,
+                  max: 1,
+                  onChanged: (v) {
+                    setState(() => blend = v);
+                    synth.setBlend(v);
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Text(
-                blend < 0.1
-                    ? 'FULL ALIAS'
-                    : blend > 0.9
-                    ? 'FULL BANDLIMIT'
-                    : '${(blend * 100).toStringAsFixed(0)}% BLEND',
-                style: AppStyles.largeAccent,
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  blend < 0.1
+                      ? 'FULL ALIAS'
+                      : blend > 0.9
+                      ? 'FULL BANDLIMIT'
+                      : '${(blend * 100).toStringAsFixed(0)}% BLEND',
+                  style: AppStyles.largeAccent,
+                ),
               ),
-            ),
-            // Alias indicator — jagged line when aliased, smooth when bandlimited
-            const SizedBox(height: 32),
-            _AliasIndicator(blend: blend),
-            const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
-          ],
+              // Alias indicator — jagged line when aliased, smooth when bandlimited
+              const SizedBox(height: 32),
+              _AliasIndicator(blend: blend),
+              const Spacer(),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentOrange,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 

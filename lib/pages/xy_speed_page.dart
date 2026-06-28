@@ -53,65 +53,71 @@ class _XySpeedPageState extends State<XySpeedPage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'XY SPEED'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('DRAG TO MODULATE'),
-            const SizedBox(height: 16),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return GestureDetector(
-                    onPanUpdate: (d) => onPanUpdate(d, constraints),
-                    onPanStart: (d) => onPanUpdate(
-                      DragUpdateDetails(
-                        globalPosition: d.globalPosition,
-                        localPosition: d.localPosition,
-                        delta: Offset.zero,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'XY SPEED'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('DRAG TO MODULATE'),
+              const SizedBox(height: 16),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GestureDetector(
+                      onPanUpdate: (d) => onPanUpdate(d, constraints),
+                      onPanStart: (d) => onPanUpdate(
+                        DragUpdateDetails(
+                          globalPosition: d.globalPosition,
+                          localPosition: d.localPosition,
+                          delta: Offset.zero,
+                        ),
+                        constraints,
                       ),
-                      constraints,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppStyles.surface,
-                        border: Border.all(
-                          color: isPlaying
-                              ? AppStyles.accentMint.withValues(alpha: 0.4)
-                              : AppStyles.trackInactive,
-                          width: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppStyles.surface,
+                          border: Border.all(
+                            color: isPlaying
+                                ? AppStyles.accentMint.withValues(alpha: 0.4)
+                                : AppStyles.trackInactive,
+                            width: 1,
+                          ),
+                        ),
+                        child: CustomPaint(
+                          painter: _XyPadPainter(
+                            position: position,
+                            trail: trail,
+                          ),
+                          size: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
                         ),
                       ),
-                      child: CustomPaint(
-                        painter: _XyPadPainter(
-                          position: position,
-                          trail: trail,
-                        ),
-                        size: Size(constraints.maxWidth, constraints.maxHeight),
-                      ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _CoordLabel(axis: 'X', value: position.dx),
-                _CoordLabel(axis: 'Y', value: position.dy),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SynthAudioControls.fromMixin(this),
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _CoordLabel(axis: 'X', value: position.dx),
+                  _CoordLabel(axis: 'Y', value: position.dy),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SynthAudioControls.fromMixin(this),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -131,7 +137,6 @@ class _CoordLabel extends StatelessWidget {
 }
 
 class _XyPadPainter extends CustomPainter {
-
   const _XyPadPainter({required this.position, required this.trail});
   final Offset position;
   final List<Offset> trail;

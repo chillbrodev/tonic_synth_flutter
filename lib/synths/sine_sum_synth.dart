@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class SineSumSynth with TonicSynthMixin {
-
   SineSumSynth() : handle = tonic_create_sine_sum() {
     logger.d('[SineSumSynth] created');
   }

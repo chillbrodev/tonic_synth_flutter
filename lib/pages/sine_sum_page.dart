@@ -38,61 +38,66 @@ class _SineSumPageState extends State<SineSumPage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'SINE SUM'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('CHORD STACK · 10 DETUNED SINES'),
-            const Spacer(),
-            Center(
-              child: GestureDetector(
-                onPanUpdate: (d) {
-                  setState(() {
-                    _wheelAngle += d.delta.dy * 0.008;
-                    pitch = ((_wheelAngle / (math.pi * 2)) % 1 + 1) % 1;
-                  });
-                  synth.setPitch(pitch);
-                },
-                child: SizedBox(
-                  width: 220,
-                  height: 220,
-                  child: CustomPaint(
-                    painter: _JogWheelPainter(
-                      angle: _wheelAngle,
-                      pitch: pitch,
-                      isPlaying: isPlaying,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'SINE SUM'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('CHORD STACK · 10 DETUNED SINES'),
+              const Spacer(),
+              Center(
+                child: GestureDetector(
+                  onPanUpdate: (d) {
+                    setState(() {
+                      _wheelAngle += d.delta.dy * 0.008;
+                      pitch = ((_wheelAngle / (math.pi * 2)) % 1 + 1) % 1;
+                    });
+                    synth.setPitch(pitch);
+                  },
+                  child: SizedBox(
+                    width: 220,
+                    height: 220,
+                    child: CustomPaint(
+                      painter: _JogWheelPainter(
+                        angle: _wheelAngle,
+                        pitch: pitch,
+                        isPlaying: isPlaying,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    pitch.toStringAsFixed(3),
-                    style: AppStyles.heroValue(AppStyles.accentOrange),
-                  ),
-                  const Text('PITCH', style: AppStyles.heroCaption),
-                ],
+              const SizedBox(height: 32),
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      pitch.toStringAsFixed(3),
+                      style: AppStyles.heroValue(AppStyles.accentOrange),
+                    ),
+                    const Text('PITCH', style: AppStyles.heroCaption),
+                  ],
+                ),
               ),
-            ),
-            const Spacer(),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
-          ],
+              const Spacer(),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentOrange,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _JogWheelPainter extends CustomPainter {
-
   const _JogWheelPainter({
     required this.angle,
     required this.pitch,
@@ -152,7 +157,9 @@ class _JogWheelPainter extends CustomPainter {
       center,
       innerR,
       Paint()
-        ..color = isPlaying ? color.withValues(alpha: 0.4) : AppStyles.surfaceRaised
+        ..color = isPlaying
+            ? color.withValues(alpha: 0.4)
+            : AppStyles.surfaceRaised
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );

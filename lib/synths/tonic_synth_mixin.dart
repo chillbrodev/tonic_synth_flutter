@@ -73,8 +73,10 @@ mixin TonicSynthMixin implements SynthAudioHost {
 
   @override
   double get recordingSecondsRemaining =>
-      (kMaxSessionSeconds - recordingSecondsRecorded)
-          .clamp(0.0, kMaxSessionSeconds.toDouble());
+      (kMaxSessionSeconds - recordingSecondsRecorded).clamp(
+        0.0,
+        kMaxSessionSeconds.toDouble(),
+      );
 
   @override
   double get recordingProgress =>
@@ -304,7 +306,10 @@ mixin TonicSynthMixin implements SynthAudioHost {
       return _saveRecordingBytes(stopped.pcmBytes, stopped.samplesRecorded);
     }
 
-    return _saveRecordingBytes(_wavWriter.takeBytes(), _wavWriter.samplesWritten);
+    return _saveRecordingBytes(
+      _wavWriter.takeBytes(),
+      _wavWriter.samplesWritten,
+    );
   }
 
   Future<String?> _saveRecordingBytes(

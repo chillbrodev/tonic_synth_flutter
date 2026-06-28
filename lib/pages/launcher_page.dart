@@ -153,10 +153,8 @@ class LauncherPage extends StatelessWidget {
           childAspectRatio: isTablet ? 1.15 : 1.1,
         ),
         itemCount: _synths.length,
-        itemBuilder: (context, i) => _SynthCardWidget(
-          card: _synths[i],
-          compact: isTablet,
-        ),
+        itemBuilder: (context, i) =>
+            _SynthCardWidget(card: _synths[i], compact: isTablet),
       ),
     );
   }

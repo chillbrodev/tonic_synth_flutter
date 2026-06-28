@@ -15,7 +15,8 @@ class SnapToScalePage extends StatefulWidget {
   State<SnapToScalePage> createState() => _SnapToScalePageState();
 }
 
-class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMixin {
+class _SnapToScalePageState extends State<SnapToScalePage>
+    with SynthPageAudioMixin {
   late final SnapToScaleSynth synth;
 
   double speed = 0.85;
@@ -66,82 +67,87 @@ class _SnapToScalePageState extends State<SnapToScalePage> with SynthPageAudioMi
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'SNAP SCALE'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('SCALE · Cm PENTATONIC'),
-            const SizedBox(height: 16),
-            // Scale grid
-            Expanded(
-              child: _ScaleGrid(
-                activeDegree: _activeDegree,
-                isPlaying: isPlaying,
-                spread: stepperSpread,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'SNAP SCALE'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('SCALE · Cm PENTATONIC'),
+              const SizedBox(height: 16),
+              // Scale grid
+              Expanded(
+                child: _ScaleGrid(
+                  activeDegree: _activeDegree,
+                  isPlaying: isPlaying,
+                  spread: stepperSpread,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const SectionLabel('CONTROLS'),
-            const SizedBox(height: 16),
-            LabeledSlider(
-              label: 'SPEED',
-              display: speed.toStringAsFixed(2),
-              value: speed,
-              min: 0,
-              max: 2,
-              color: AppStyles.accentPurple,
-              labelWidth: 64,
-              displayWidth: 48,
-              onChanged: (v) {
-                setState(() => speed = v);
-                onResult(synth.setSpeed(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'START',
-              display: stepperStart.toStringAsFixed(2),
-              value: stepperStart,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentPurple,
-              labelWidth: 64,
-              displayWidth: 48,
-              onChanged: (v) {
-                setState(() => stepperStart = v);
-                onResult(synth.setStepperStart(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'SPREAD',
-              display: stepperSpread.toStringAsFixed(2),
-              value: stepperSpread,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentPurple,
-              labelWidth: 64,
-              displayWidth: 48,
-              onChanged: (v) {
-                setState(() => stepperSpread = v);
-                onResult(synth.setStepperSpread(v));
-              },
-            ),
-            const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
-          ],
+              const SizedBox(height: 24),
+              const SectionLabel('CONTROLS'),
+              const SizedBox(height: 16),
+              LabeledSlider(
+                label: 'SPEED',
+                display: speed.toStringAsFixed(2),
+                value: speed,
+                min: 0,
+                max: 2,
+                color: AppStyles.accentPurple,
+                labelWidth: 64,
+                displayWidth: 48,
+                onChanged: (v) {
+                  setState(() => speed = v);
+                  onResult(synth.setSpeed(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'START',
+                display: stepperStart.toStringAsFixed(2),
+                value: stepperStart,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentPurple,
+                labelWidth: 64,
+                displayWidth: 48,
+                onChanged: (v) {
+                  setState(() => stepperStart = v);
+                  onResult(synth.setStepperStart(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'SPREAD',
+                display: stepperSpread.toStringAsFixed(2),
+                value: stepperSpread,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentPurple,
+                labelWidth: 64,
+                displayWidth: 48,
+                onChanged: (v) {
+                  setState(() => stepperSpread = v);
+                  onResult(synth.setStepperSpread(v));
+                },
+              ),
+              const SizedBox(height: 24),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentPurple,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _ScaleGrid extends StatelessWidget {
-
   const _ScaleGrid({
     required this.activeDegree,
     required this.isPlaying,

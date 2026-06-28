@@ -119,7 +119,8 @@ class SynthAudioControls extends StatelessWidget {
       savedRecordingPath: audioMixin.savedRecordingPath,
       getRecordingProgress: () => audioMixin.synthAudio.recordingProgress,
       getRecordingElapsed: () => audioMixin.synthAudio.recordingSecondsRecorded,
-      getRecordingRemaining: () => audioMixin.synthAudio.recordingSecondsRemaining,
+      getRecordingRemaining: () =>
+          audioMixin.synthAudio.recordingSecondsRemaining,
       onToggle: audioMixin.toggleSynthAudio,
       onRecord: audioMixin.startSynthRecording,
       onStopRecord: audioMixin.stopSynthRecording,

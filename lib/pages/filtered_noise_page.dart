@@ -12,7 +12,8 @@ class FilteredNoisePage extends StatefulWidget {
   State<FilteredNoisePage> createState() => _FilteredNoisePageState();
 }
 
-class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAudioMixin {
+class _FilteredNoisePageState extends State<FilteredNoisePage>
+    with SynthPageAudioMixin {
   late final FilteredNoiseSynth synth;
   double cutoff = 0.5;
   double q = 5.0;
@@ -47,55 +48,61 @@ class _FilteredNoisePageState extends State<FilteredNoisePage> with SynthPageAud
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'NOISE FILTER'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('DRAG · X = CUTOFF · Y = RESONANCE'),
-            const SizedBox(height: 16),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return GestureDetector(
-                    onPanUpdate: (d) => onPanUpdate(d, constraints),
-                    onPanStart: (d) => onPanUpdate(
-                      DragUpdateDetails(
-                        globalPosition: d.globalPosition,
-                        localPosition: d.localPosition,
-                        delta: Offset.zero,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'NOISE FILTER'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('DRAG · X = CUTOFF · Y = RESONANCE'),
+              const SizedBox(height: 16),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GestureDetector(
+                      onPanUpdate: (d) => onPanUpdate(d, constraints),
+                      onPanStart: (d) => onPanUpdate(
+                        DragUpdateDetails(
+                          globalPosition: d.globalPosition,
+                          localPosition: d.localPosition,
+                          delta: Offset.zero,
+                        ),
+                        constraints,
                       ),
-                      constraints,
-                    ),
-                    child: CustomPaint(
-                      painter: _NoiseFilterPainter(
-                        cutoff: cutoff,
-                        q: q / 10,
-                        isPlaying: isPlaying,
+                      child: CustomPaint(
+                        painter: _NoiseFilterPainter(
+                          cutoff: cutoff,
+                          q: q / 10,
+                          isPlaying: isPlaying,
+                        ),
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
                       ),
-                      size: Size(constraints.maxWidth, constraints.maxHeight),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _CoordRow(label: 'CUTOFF', value: cutoff.toStringAsFixed(2)),
-                _CoordRow(label: 'Q', value: q.toStringAsFixed(1)),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentPurple),
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _CoordRow(label: 'CUTOFF', value: cutoff.toStringAsFixed(2)),
+                  _CoordRow(label: 'Q', value: q.toStringAsFixed(1)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentPurple,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -120,7 +127,6 @@ class _CoordRow extends StatelessWidget {
 }
 
 class _NoiseFilterPainter extends CustomPainter {
-
   const _NoiseFilterPainter({
     required this.cutoff,
     required this.q,

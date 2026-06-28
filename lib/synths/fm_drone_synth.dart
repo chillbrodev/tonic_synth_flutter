@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class FmDroneSynth with TonicSynthMixin {
-
   FmDroneSynth() : handle = tonic_create_fm_drone() {
     logger.d('[FmDroneSynth] created');
   }

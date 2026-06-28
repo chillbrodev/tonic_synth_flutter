@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class StereoDelaySynth with TonicSynthMixin {
-
   StereoDelaySynth() : handle = tonic_create_stereo_delay() {
     logger.d('[StereoDelaySynth] created');
   }

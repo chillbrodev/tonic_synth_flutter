@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class SnapToScaleSynth with TonicSynthMixin {
-
   SnapToScaleSynth() : handle = tonic_create_snap_to_scale() {
     logger.d('[SnapToScaleSynth] created');
   }
@@ -19,8 +18,10 @@ class SnapToScaleSynth with TonicSynthMixin {
   TonicResult setSpeed(double amount) => setParam('speed', amount);
 
   /// Stepper start position. Range: 0..1
-  TonicResult setStepperStart(double amount) => setParam('stepperStart', amount);
+  TonicResult setStepperStart(double amount) =>
+      setParam('stepperStart', amount);
 
   /// Stepper pitch spread. Range: 0..1
-  TonicResult setStepperSpread(double amount) => setParam('stepperSpread', amount);
+  TonicResult setStepperSpread(double amount) =>
+      setParam('stepperSpread', amount);
 }

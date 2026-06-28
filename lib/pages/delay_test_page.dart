@@ -13,7 +13,8 @@ class DelayTestPage extends StatefulWidget {
   State<DelayTestPage> createState() => _DelayTestPageState();
 }
 
-class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin {
+class _DelayTestPageState extends State<DelayTestPage>
+    with SynthPageAudioMixin {
   late final DelayTestSynth synth;
 
   double tempo = 120;
@@ -55,99 +56,102 @@ class _DelayTestPageState extends State<DelayTestPage> with SynthPageAudioMixin 
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'DELAY SEQ'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('TEMPO'),
-            const SizedBox(height: 16),
-            _BpmCounter(tempo: tempo, onAdjustTempo: adjustTempo),
-            const SizedBox(height: 36),
-            const SectionLabel('DELAY'),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ArcDial(
-                  label: 'TIME',
-                  value: delayTime,
-                  min: 0.001,
-                  max: 1.0,
-                  display: '${(delayTime * 1000).toStringAsFixed(0)}ms',
-                  color: AppStyles.accentMint,
-                  onChanged: (v) {
-                    setState(() => delayTime = v);
-                    onResult(synth.setDelayTime(v));
-                  },
-                ),
-                ArcDial(
-                  label: 'FEEDBACK',
-                  value: feedback,
-                  min: 0,
-                  max: 0.95,
-                  display: feedback.toStringAsFixed(2),
-                  color: AppStyles.accentMint,
-                  onChanged: (v) {
-                    setState(() => feedback = v);
-                    onResult(synth.setFeedback(v));
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const SectionLabel('ENVELOPE & MIX'),
-            const SizedBox(height: 20),
-            LabeledSlider(
-              label: 'DRY / WET',
-              display: delayMix.toStringAsFixed(2),
-              value: delayMix,
-              min: 0,
-              max: 1,
-              displayWidth: 52,
-              color: AppStyles.accentMint,
-              onChanged: (v) {
-                setState(() => delayMix = v);
-                onResult(synth.setDelayMix(v));
-              },
-            ),
-            const SizedBox(height: 16),
-            LabeledSlider(
-              label: 'DECAY',
-              display: '${(decayTime * 1000).toStringAsFixed(0)}ms',
-              value: decayTime,
-              min: 0.05,
-              max: 0.25,
-              displayWidth: 52,
-              color: AppStyles.accentMint,
-              onChanged: (v) {
-                setState(() => decayTime = v);
-                onResult(synth.setDecayTime(v));
-              },
-            ),
-            const SizedBox(height: 16),
-            LabeledSlider(
-              label: 'VOLUME',
-              display: '${volume.toStringAsFixed(0)}dB',
-              value: volume,
-              min: -60,
-              max: 0,
-              displayWidth: 52,
-              color: AppStyles.accentOrange,
-              onChanged: (v) {
-                setState(() => volume = v);
-                onResult(synth.setVolume(v));
-              },
-            ),
-            const SizedBox(height: 32),
-            SynthAudioControls.fromMixin(this),
-          ],
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'DELAY SEQ'),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('TEMPO'),
+              const SizedBox(height: 16),
+              _BpmCounter(tempo: tempo, onAdjustTempo: adjustTempo),
+              const SizedBox(height: 36),
+              const SectionLabel('DELAY'),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ArcDial(
+                    label: 'TIME',
+                    value: delayTime,
+                    min: 0.001,
+                    max: 1.0,
+                    display: '${(delayTime * 1000).toStringAsFixed(0)}ms',
+                    color: AppStyles.accentMint,
+                    onChanged: (v) {
+                      setState(() => delayTime = v);
+                      onResult(synth.setDelayTime(v));
+                    },
+                  ),
+                  ArcDial(
+                    label: 'FEEDBACK',
+                    value: feedback,
+                    min: 0,
+                    max: 0.95,
+                    display: feedback.toStringAsFixed(2),
+                    color: AppStyles.accentMint,
+                    onChanged: (v) {
+                      setState(() => feedback = v);
+                      onResult(synth.setFeedback(v));
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              const SectionLabel('ENVELOPE & MIX'),
+              const SizedBox(height: 20),
+              LabeledSlider(
+                label: 'DRY / WET',
+                display: delayMix.toStringAsFixed(2),
+                value: delayMix,
+                min: 0,
+                max: 1,
+                displayWidth: 52,
+                color: AppStyles.accentMint,
+                onChanged: (v) {
+                  setState(() => delayMix = v);
+                  onResult(synth.setDelayMix(v));
+                },
+              ),
+              const SizedBox(height: 16),
+              LabeledSlider(
+                label: 'DECAY',
+                display: '${(decayTime * 1000).toStringAsFixed(0)}ms',
+                value: decayTime,
+                min: 0.05,
+                max: 0.25,
+                displayWidth: 52,
+                color: AppStyles.accentMint,
+                onChanged: (v) {
+                  setState(() => decayTime = v);
+                  onResult(synth.setDecayTime(v));
+                },
+              ),
+              const SizedBox(height: 16),
+              LabeledSlider(
+                label: 'VOLUME',
+                display: '${volume.toStringAsFixed(0)}dB',
+                value: volume,
+                min: -60,
+                max: 0,
+                displayWidth: 52,
+                color: AppStyles.accentOrange,
+                onChanged: (v) {
+                  setState(() => volume = v);
+                  onResult(synth.setVolume(v));
+                },
+              ),
+              const SizedBox(height: 32),
+              SynthAudioControls.fromMixin(this),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -163,7 +167,11 @@ class _BpmCounter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _TempoButton(icon: Icons.remove, delta: -1, onAdjustTempo: onAdjustTempo),
+        _TempoButton(
+          icon: Icons.remove,
+          delta: -1,
+          onAdjustTempo: onAdjustTempo,
+        ),
         const SizedBox(width: 8),
         _TempoButton(
           icon: Icons.remove,
@@ -213,11 +221,7 @@ class _TempoButton extends StatelessWidget {
           border: Border.all(color: AppStyles.trackInactive),
           borderRadius: BorderRadius.circular(2),
         ),
-        child: Icon(
-          icon,
-          color: AppStyles.accentMint,
-          size: large ? 18 : 14,
-        ),
+        child: Icon(icon, color: AppStyles.accentMint, size: large ? 18 : 14),
       ),
     );
   }

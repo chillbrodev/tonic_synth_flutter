@@ -14,7 +14,8 @@ class StereoDelayPage extends StatefulWidget {
   State<StereoDelayPage> createState() => _StereoDelayPageState();
 }
 
-class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMixin {
+class _StereoDelayPageState extends State<StereoDelayPage>
+    with SynthPageAudioMixin {
   late final StereoDelaySynth synth;
 
   double freq = 0;
@@ -49,91 +50,93 @@ class _StereoDelayPageState extends State<StereoDelayPage> with SynthPageAudioMi
       });
     }
 
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'STEREO DELAY'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('STEREO FIELD'),
-            const SizedBox(height: 16),
-            Expanded(
-              child: CustomPaint(
-                painter: _StereoFieldPainter(
-                  phase: _tapPhase,
-                  decay: decay,
-                  isPlaying: isPlaying,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'STEREO DELAY'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('STEREO FIELD'),
+              const SizedBox(height: 16),
+              Expanded(
+                child: CustomPaint(
+                  painter: _StereoFieldPainter(
+                    phase: _tapPhase,
+                    decay: decay,
+                    isPlaying: isPlaying,
+                  ),
+                  size: Size.infinite,
                 ),
-                size: Size.infinite,
               ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ArcDial(
-                  label: 'FREQ',
-                  value: freq,
-                  min: 0,
-                  max: 500,
-                  display: '${freq.toStringAsFixed(0)}Hz',
-                  color: AppStyles.accentBlue,
-                  dialSize: 90,
-                  strokeWidth: 5,
-                  displayFontSize: 10,
-                  labelSpacing: 6,
-                  onChanged: (v) {
-                    setState(() => freq = v);
-                    onResult(synth.setFreq(v));
-                  },
-                ),
-                ArcDial(
-                  label: 'RANDOM',
-                  value: freqRand,
-                  min: 0,
-                  max: 1,
-                  display: freqRand.toStringAsFixed(2),
-                  color: AppStyles.accentBlue,
-                  dialSize: 90,
-                  strokeWidth: 5,
-                  displayFontSize: 10,
-                  labelSpacing: 6,
-                  onChanged: (v) {
-                    setState(() => freqRand = v);
-                    onResult(synth.setFrequencyRandomAmount(v));
-                  },
-                ),
-                ArcDial(
-                  label: 'DECAY',
-                  value: decay,
-                  min: 0,
-                  max: 2,
-                  display: '${decay.toStringAsFixed(2)}s',
-                  color: AppStyles.accentBlue,
-                  dialSize: 90,
-                  strokeWidth: 5,
-                  displayFontSize: 10,
-                  labelSpacing: 6,
-                  onChanged: (v) {
-                    setState(() => decay = v);
-                    onResult(synth.setDecay(v));
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
-          ],
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ArcDial(
+                    label: 'FREQ',
+                    value: freq,
+                    min: 0,
+                    max: 500,
+                    display: '${freq.toStringAsFixed(0)}Hz',
+                    color: AppStyles.accentBlue,
+                    dialSize: 90,
+                    strokeWidth: 5,
+                    displayFontSize: 10,
+                    labelSpacing: 6,
+                    onChanged: (v) {
+                      setState(() => freq = v);
+                      onResult(synth.setFreq(v));
+                    },
+                  ),
+                  ArcDial(
+                    label: 'RANDOM',
+                    value: freqRand,
+                    min: 0,
+                    max: 1,
+                    display: freqRand.toStringAsFixed(2),
+                    color: AppStyles.accentBlue,
+                    dialSize: 90,
+                    strokeWidth: 5,
+                    displayFontSize: 10,
+                    labelSpacing: 6,
+                    onChanged: (v) {
+                      setState(() => freqRand = v);
+                      onResult(synth.setFrequencyRandomAmount(v));
+                    },
+                  ),
+                  ArcDial(
+                    label: 'DECAY',
+                    value: decay,
+                    min: 0,
+                    max: 2,
+                    display: '${decay.toStringAsFixed(2)}s',
+                    color: AppStyles.accentBlue,
+                    dialSize: 90,
+                    strokeWidth: 5,
+                    displayFontSize: 10,
+                    labelSpacing: 6,
+                    onChanged: (v) {
+                      setState(() => decay = v);
+                      onResult(synth.setDecay(v));
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _StereoFieldPainter extends CustomPainter {
-
   const _StereoFieldPainter({
     required this.phase,
     required this.decay,

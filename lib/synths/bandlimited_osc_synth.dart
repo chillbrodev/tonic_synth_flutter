@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class BandlimitedOscSynth with TonicSynthMixin {
-
   BandlimitedOscSynth() : handle = tonic_create_bandlimited_osc() {
     logger.d('[BandlimitedOscSynth] created');
   }

@@ -14,7 +14,8 @@ class ReverbTestPage extends StatefulWidget {
   State<ReverbTestPage> createState() => _ReverbTestPageState();
 }
 
-class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixin {
+class _ReverbTestPageState extends State<ReverbTestPage>
+    with SynthPageAudioMixin {
   late final ReverbTestSynth synth;
 
   double dry = -6;
@@ -46,144 +47,146 @@ class _ReverbTestPageState extends State<ReverbTestPage> with SynthPageAudioMixi
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'REVERB'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('ROOM'),
-            const SizedBox(height: 16),
-            Center(
-              child: SizedBox(
-                width: 200,
-                height: 160,
-                child: CustomPaint(
-                  painter: _RoomPainter(
-                    size: size,
-                    shape: shape,
-                    density: density,
-                    decayTime: decayTime,
-                    isPlaying: isPlaying,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'REVERB'),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('ROOM'),
+              const SizedBox(height: 16),
+              Center(
+                child: SizedBox(
+                  width: 200,
+                  height: 160,
+                  child: CustomPaint(
+                    painter: _RoomPainter(
+                      size: size,
+                      shape: shape,
+                      density: density,
+                      decayTime: decayTime,
+                      isPlaying: isPlaying,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            const SectionLabel('SPACE'),
-            const SizedBox(height: 16),
-            LabeledSlider(
-              label: 'DECAY',
-              display: '${decayTime.toStringAsFixed(1)}s',
-              value: decayTime,
-              min: 0.1,
-              max: 10,
-              color: AppStyles.accentBlue,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => decayTime = v);
-                onResult(synth.setDecayTime(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'SIZE',
-              display: size.toStringAsFixed(2),
-              value: size,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentBlue,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => size = v);
-                onResult(synth.setSize(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'SHAPE',
-              display: shape.toStringAsFixed(2),
-              value: shape,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentBlue,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => shape = v);
-                onResult(synth.setShape(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'DENSITY',
-              display: density.toStringAsFixed(2),
-              value: density,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentBlue,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => density = v);
-                onResult(synth.setDensity(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'STEREO',
-              display: stereo.toStringAsFixed(2),
-              value: stereo,
-              min: 0,
-              max: 1,
-              color: AppStyles.accentBlue,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => stereo = v);
-                onResult(synth.setStereo(v));
-              },
-            ),
-            const SizedBox(height: 24),
-            const SectionLabel('LEVELS'),
-            const SizedBox(height: 16),
-            LabeledSlider(
-              label: 'DRY',
-              display: '${dry.toStringAsFixed(0)}dB',
-              value: dry,
-              min: -60,
-              max: 0,
-              color: AppStyles.accentMint,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => dry = v);
-                onResult(synth.setDry(v));
-              },
-            ),
-            const SizedBox(height: 12),
-            LabeledSlider(
-              label: 'WET',
-              display: '${wet.toStringAsFixed(0)}dB',
-              value: wet,
-              min: -60,
-              max: 0,
-              color: AppStyles.accentOrange,
-              displayWidth: 52,
-              onChanged: (v) {
-                setState(() => wet = v);
-                onResult(synth.setWet(v));
-              },
-            ),
-            const SizedBox(height: 32),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
-          ],
+              const SizedBox(height: 32),
+              const SectionLabel('SPACE'),
+              const SizedBox(height: 16),
+              LabeledSlider(
+                label: 'DECAY',
+                display: '${decayTime.toStringAsFixed(1)}s',
+                value: decayTime,
+                min: 0.1,
+                max: 10,
+                color: AppStyles.accentBlue,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => decayTime = v);
+                  onResult(synth.setDecayTime(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'SIZE',
+                display: size.toStringAsFixed(2),
+                value: size,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentBlue,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => size = v);
+                  onResult(synth.setSize(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'SHAPE',
+                display: shape.toStringAsFixed(2),
+                value: shape,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentBlue,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => shape = v);
+                  onResult(synth.setShape(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'DENSITY',
+                display: density.toStringAsFixed(2),
+                value: density,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentBlue,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => density = v);
+                  onResult(synth.setDensity(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'STEREO',
+                display: stereo.toStringAsFixed(2),
+                value: stereo,
+                min: 0,
+                max: 1,
+                color: AppStyles.accentBlue,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => stereo = v);
+                  onResult(synth.setStereo(v));
+                },
+              ),
+              const SizedBox(height: 24),
+              const SectionLabel('LEVELS'),
+              const SizedBox(height: 16),
+              LabeledSlider(
+                label: 'DRY',
+                display: '${dry.toStringAsFixed(0)}dB',
+                value: dry,
+                min: -60,
+                max: 0,
+                color: AppStyles.accentMint,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => dry = v);
+                  onResult(synth.setDry(v));
+                },
+              ),
+              const SizedBox(height: 12),
+              LabeledSlider(
+                label: 'WET',
+                display: '${wet.toStringAsFixed(0)}dB',
+                value: wet,
+                min: -60,
+                max: 0,
+                color: AppStyles.accentOrange,
+                displayWidth: 52,
+                onChanged: (v) {
+                  setState(() => wet = v);
+                  onResult(synth.setWet(v));
+                },
+              ),
+              const SizedBox(height: 32),
+              SynthAudioControls.fromMixin(this, accent: AppStyles.accentBlue),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _RoomPainter extends CustomPainter {
-
   const _RoomPainter({
     required this.size,
     required this.shape,

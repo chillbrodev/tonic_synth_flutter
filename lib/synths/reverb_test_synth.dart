@@ -5,7 +5,6 @@ import 'package:tonic_synth_flutter/synths/tonic_synth_mixin.dart';
 import 'package:tonic_synth_flutter/synths/result/tonic_result.dart';
 
 class ReverbTestSynth with TonicSynthMixin {
-
   ReverbTestSynth() : handle = tonic_create_reverb_test() {
     logger.d('[ReverbTestSynth] created');
   }

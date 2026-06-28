@@ -48,7 +48,8 @@ class _FmDronePageState extends State<FmDronePage> with SynthPageAudioMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, 
+    return SynthPageShell(
+      isRecording: isRecording,
       child: Scaffold(
         backgroundColor: AppStyles.background,
         appBar: SynthAppBar(title: 'FM DRONE'),

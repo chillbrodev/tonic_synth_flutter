@@ -64,43 +64,48 @@ class _ArbitraryTablePageState extends State<ArbitraryTablePage>
 
   @override
   Widget build(BuildContext context) {
-    return SynthPageShell(isRecording: isRecording, child: Scaffold(
-      backgroundColor: AppStyles.background,
-      appBar: SynthAppBar(title: 'WAVETABLE'),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionLabel('WAVEFORM OUTPUT'),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppStyles.surface,
-                  border: Border.all(color: AppStyles.surfaceRaised),
-                ),
-                child: CustomPaint(
-                  painter: _WaveformPainter(
-                    samples: _waveform,
-                    color: AppStyles.accentOrange,
-                    isPlaying: isPlaying,
+    return SynthPageShell(
+      isRecording: isRecording,
+      child: Scaffold(
+        backgroundColor: AppStyles.background,
+        appBar: SynthAppBar(title: 'WAVETABLE'),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionLabel('WAVEFORM OUTPUT'),
+              const SizedBox(height: 24),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppStyles.surface,
+                    border: Border.all(color: AppStyles.surfaceRaised),
                   ),
-                  size: Size.infinite,
+                  child: CustomPaint(
+                    painter: _WaveformPainter(
+                      samples: _waveform,
+                      color: AppStyles.accentOrange,
+                      isPlaying: isPlaying,
+                    ),
+                    size: Size.infinite,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            SynthAudioControls.fromMixin(this, accent: AppStyles.accentOrange),
-          ],
+              const SizedBox(height: 24),
+              SynthAudioControls.fromMixin(
+                this,
+                accent: AppStyles.accentOrange,
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
 class _WaveformPainter extends CustomPainter {
-
   const _WaveformPainter({
     required this.samples,
     required this.color,
