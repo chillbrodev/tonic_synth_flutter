@@ -1,6 +1,6 @@
 # tonic_synth_flutter
 
-A Flutter demo app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks.
+A Flutter app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks.
 
 ---
 
@@ -116,8 +116,6 @@ Output: `lib/ffi/gen/tonic_native.g.dart`
 flutter pub get
 flutter run
 ```
-
-> **iOS device note:** LLDB debugging is disabled (`enable-lldb-debugging: false` in `pubspec.yaml`) due to a slow-attach issue with Xcode 26.5. Dart debugging, hot reload, and DevTools all work normally. Native C++ breakpoints are unavailable — re-enable temporarily by removing the config block if needed.
 
 ---
 
