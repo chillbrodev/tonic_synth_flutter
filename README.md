@@ -227,3 +227,66 @@ FFIGen generates `@Native` annotated external functions — no `DynamicLibrary.o
 ```
 package:tonic_synth_flutter/ffi/gen/tonic_native.g.dart
 ```
+
+## Checking Native Dependencies
+
+`scripts/check_dependencies.sh` inspects the linked dependencies of the native
+binaries bundled in this project — the iOS `.xcframework` and the Android
+`.so` files — so you can quickly sanity-check what each platform's native
+layer actually depends on.
+
+### What it does
+
+- **iOS**: runs `otool -L` against every architecture slice inside
+  `libtonic_wrapper.xcframework` (`ios-arm64`, `ios-arm64-simulator`) and
+  lists each binary's dynamic library dependencies.
+- **Android**: runs `readelf -d | grep NEEDED` against `libtonic_wrapper.so`
+  for each ABI in `native/libs/android` (`arm64-v8a`, `armeabi-v7a`,
+  `x86_64`).
+
+### Usage
+
+```bash
+./scripts/check_dependencies.sh
+```
+
+Exits non-zero if either platform check fails, so it's safe to drop into CI
+as a sanity gate.
+
+### Requirements
+
+- **macOS + Xcode command line tools** for the iOS check (`otool`, `lipo`).
+- **A `readelf`-compatible tool** for the Android check. The script
+  auto-detects, in order:
+  1. An explicit `READELF_BIN` override
+  2. System `readelf` (Linux)
+  3. Homebrew's `greadelf` (`brew install binutils`)
+  4. The Android NDK's `llvm-readelf`, auto-discovered from `$ANDROID_HOME`
+     or `$ANDROID_SDK_ROOT`, falling back to standard SDK install locations
+     (`~/Library/Android/sdk`, `~/Android/Sdk`, etc.)
+
+No machine-specific paths are hardcoded — this should work out of the box for
+any contributor with a standard Android SDK/NDK install.
+
+### Overriding defaults
+
+```bash
+IOS_XCFRAMEWORK=path/to/other.xcframework \
+ANDROID_LIBS_DIR=path/to/other/libs \
+ANDROID_SO_NAME=libother.so \
+READELF_BIN=/path/to/llvm-readelf \
+./scripts/check_dependencies.sh
+```
+
+### A note on iOS dependencies
+
+The iOS check will normally list only public Apple system frameworks (e.g.
+`Foundation`, `CoreFoundation`, `AudioToolbox`, `Accelerate`) and base system
+libs (`libc++`, `libSystem`) — these ship with every iOS install via the dyld
+shared cache, so their *presence* isn't a concern. What's worth verifying
+separately is **API availability**: check the binary's minimum supported OS
+version against the app's deployment target with:
+
+```bash
+otool -l <path-to-binary> | grep -A3 LC_BUILD_VERSION
+```
