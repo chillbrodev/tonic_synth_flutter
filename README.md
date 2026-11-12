@@ -1,7 +1,8 @@
 # tonic_synth_flutter
 
-A Flutter app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks.
+A Flutter app wrapping the [Tonic](https://github.com/TonicAudio/Tonic) C++ audio synthesis library using Dart FFI, FFIGen, and Dart Build Hooks.  100% offline on-device audio generation.
 
+Now available on [Google Play](https://play.google.com/store/apps/details?id=com.uptechstudio.tonic) and [Apple App Store](https://apps.apple.com/us/app/tonic-synths/id6781071843).
 ---
 
 ## What This Is
